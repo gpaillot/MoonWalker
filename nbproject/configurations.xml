@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>Controllers_gr1.hpp</itemPath>
+      <itemPath>CtrlStruct_gr1.h</itemPath>
+      <itemPath>GPIOClass.h</itemPath>
+      <itemPath>Motors.h</itemPath>
+      <itemPath>MyDE0Nano.h</itemPath>
+      <itemPath>MyMCP2515.h</itemPath>
+      <itemPath>Wheels_gr1.hpp</itemPath>
+      <itemPath>ctrl_io.h</itemPath>
+      <itemPath>globals.h</itemPath>
+      <itemPath>initTourelle.h</itemPath>
+      <itemPath>stop.h</itemPath>
+      <itemPath>tourelle.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>Controllers_gr1.cpp</itemPath>
+      <itemPath>CtrlStruct_gr1.cc</itemPath>
+      <itemPath>GPIOClass.cpp</itemPath>
+      <itemPath>Motors.cpp</itemPath>
+      <itemPath>MyDE0Nano.cpp</itemPath>
+      <itemPath>MyMCP2515.cpp</itemPath>
+      <itemPath>Wheels_gr1.cpp</itemPath>
+      <itemPath>globals.cpp</itemPath>
+      <itemPath>initTourelle.cpp</itemPath>
+      <itemPath>main.cpp</itemPath>
+      <itemPath>stop.cpp</itemPath>
+      <itemPath>tourelle.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <compilerSet>GNU|GNU</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>-lwiringPi</linkerOptionItem>
+            <linkerOptionItem>-lpigpio</linkerOptionItem>
+            <linkerOptionItem>-lpthread</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="Controllers_gr1.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Controllers_gr1.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="CtrlStruct_gr1.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="CtrlStruct_gr1.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="GPIOClass.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="GPIOClass.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Motors.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Motors.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="MyDE0Nano.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MyDE0Nano.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="MyMCP2515.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MyMCP2515.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Wheels_gr1.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Wheels_gr1.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ctrl_io.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="initTourelle.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="initTourelle.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stop.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stop.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tourelle.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tourelle.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="Controllers_gr1.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Controllers_gr1.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="CtrlStruct_gr1.cc" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="CtrlStruct_gr1.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="GPIOClass.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="GPIOClass.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Motors.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Motors.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="MyDE0Nano.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MyDE0Nano.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="MyMCP2515.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MyMCP2515.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Wheels_gr1.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Wheels_gr1.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ctrl_io.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="initTourelle.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="initTourelle.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stop.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stop.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tourelle.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tourelle.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
