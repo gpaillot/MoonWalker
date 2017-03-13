@@ -135,19 +135,21 @@ int main(int argc, char** argv) {
        
    }*/
     
+   int speedLeft = 30;
+   int speedRight = 30;
     
-    motorsright.setLed(true);
+    motorsright.setLed(false);
     //tourelle.setLed(false);
     //tourelle.setSpeed(-25);
-    //motorsright.setSpeed(10);
-    motorsleft.setSpeed(27);
-    //motorsright.setSpeed(0);
-    time_sleep(1);
+    motorsleft.setSpeed(speedLeft);
+    motorsright.setSpeed(speedRight);
+    time_sleep(0.98);
    // motorsleft.getSpeed();
     //motorsright.getSpeed();
     //tourelle.setBrake(true);
      //time_sleep(1);
     motorsleft.setBrake(true);
+    motorsright.setBrake(true);
     //motorsright.setBrake(true);
     motorsleft.getPosition();
     motorsright.getPosition();
