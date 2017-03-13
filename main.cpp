@@ -22,6 +22,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include "MyMCP2515.h"
+#include "MyDE0Nano.h"
 #include "Motors.h"
 #include "Controllers_gr1.hpp"
 #include "CtrlStruct_gr1.h"
@@ -95,9 +96,8 @@ int main(int argc, char** argv) {
     atab->motorL = motorsleft;
     atab->MyStruct = MyStruct;
     
-   double *KpKi =Kp_Ki_Computation(0.1, 15e-3);
+   double *KpKi =Kp_Ki_Computation(0.01, 10e-3);
    double *wheel_ref = Wheels_reference_speed(0.5,0.0);
-   //MyStruct->struct_control->
    double *commande_vitesse;
    double *xsiR;
    pthread_t threadMotorRight,threadMotorLeft;
@@ -113,11 +113,17 @@ int main(int argc, char** argv) {
    }
    double duration;
    clock_t start,end;
-   
-    /*while(MyStruct->struct_wheels->x_t <2)
+   char buf[4] = {0x00, 0x00, 0x00, 0x00};
+   while(1) {
+    makeData(buf, 0x00, 0x00, 0x00, 0x00, false);
+    nano->readWriteReg(READ, 0x01, (signed char*)buf, 4); // register read of PosEgdeTicks
+    int number_of_tics = spi2data(buf);
+    printf("number of tics = %d", number_of_tics);
+   }
+   /* while(1)
    { 
         start = clock(); 
-        commande_vitesse =  LowLevelController(MyStruct,wheel_ref, 0.0404, 2.5449);
+        commande_vitesse =  LowLevelController(MyStruct,wheel_ref, 2.04, 20.449);
         motorsright.setSpeed(commande_vitesse[0]);
         motorsleft.setSpeed(commande_vitesse[1]);
 
@@ -138,12 +144,12 @@ int main(int argc, char** argv) {
    int speedLeft = 30;
    int speedRight = 30;
     
-    motorsright.setLed(false);
+    motorsright.setLed(true);
     //tourelle.setLed(false);
     //tourelle.setSpeed(-25);
     motorsleft.setSpeed(speedLeft);
-    motorsright.setSpeed(speedRight);
-    time_sleep(0.98);
+    //motorsright.setSpeed(speedRight);
+    time_sleep(5.98);
    // motorsleft.getSpeed();
     //motorsright.getSpeed();
     //tourelle.setBrake(true);
