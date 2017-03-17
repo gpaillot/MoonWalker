@@ -31,6 +31,7 @@
 #include "globals.h"
 #include "tourelle.h"
 #include "ctrl_io.h"
+#include "Odometer.h"
 #include "Wheels_gr1.hpp"
 #include <pthread.h>
 #include <time.h>
@@ -77,6 +78,8 @@ int main(int argc, char** argv) {
     MyTourelle tourelle(MyCAN, nano, 0x508);
     MyMotors motorsright(MyCAN, nano, 0x708,1);
     MyMotors motorsleft(MyCAN, nano, 0x708,2);
+    MyOdometers odoright(nano,1);
+    MyOdometers odoleft(nano,2);
     nano->reset();
     
     CtrlIn *In;
@@ -96,8 +99,8 @@ int main(int argc, char** argv) {
     atab->motorL = motorsleft;
     atab->MyStruct = MyStruct;
     
-   double *KpKi =Kp_Ki_Computation(0.01, 10e-3);
-   double *wheel_ref = Wheels_reference_speed(0.5,0.0);
+   double *KpKi =Kp_Ki_Computation(0.04, 0.01);
+   double *wheel_ref = Wheels_reference_speed(0.2,0.0);
    double *commande_vitesse;
    double *xsiR;
    pthread_t threadMotorRight,threadMotorLeft;
@@ -113,17 +116,18 @@ int main(int argc, char** argv) {
    }
    double duration;
    clock_t start,end;
-   char buf[4] = {0x00, 0x00, 0x00, 0x00};
+   /*char buf[4] = {0x00, 0x00, 0x00, 0x00};
    while(1) {
     makeData(buf, 0x00, 0x00, 0x00, 0x00, false);
     nano->readWriteReg(READ, 0x01, (signed char*)buf, 4); // register read of PosEgdeTicks
     int number_of_tics = spi2data(buf);
-    printf("number of tics = %d", number_of_tics);
-   }
-   /* while(1)
+    printf("number of tics = %d \n", number_of_tics);
+    time_sleep(0.5);
+   } */
+    while(1)
    { 
         start = clock(); 
-        commande_vitesse =  LowLevelController(MyStruct,wheel_ref, 2.04, 20.449);
+        commande_vitesse =  LowLevelController(MyStruct,wheel_ref, KpKi[0], KpKi[1]);
         motorsright.setSpeed(commande_vitesse[0]);
         motorsleft.setSpeed(commande_vitesse[1]);
 
@@ -139,17 +143,18 @@ int main(int argc, char** argv) {
        
        
        
-   }*/
+   }
     
-   int speedLeft = 30;
-   int speedRight = 30;
+   int speedLeft = 5;
+   int speedRight = 5;
     
     motorsright.setLed(true);
     //tourelle.setLed(false);
     //tourelle.setSpeed(-25);
     motorsleft.setSpeed(speedLeft);
+    motorsright.setSpeed(speedRight);
     //motorsright.setSpeed(speedRight);
-    time_sleep(5.98);
+    time_sleep(3.25);
    // motorsleft.getSpeed();
     //motorsright.getSpeed();
     //tourelle.setBrake(true);
@@ -159,7 +164,9 @@ int main(int argc, char** argv) {
     //motorsright.setBrake(true);
     motorsleft.getPosition();
     motorsright.getPosition();
-
+    odoright.getOdometersPosition();
+    odoleft.getOdometersPosition();
+    sleep(1);
     return 0;
 }
 

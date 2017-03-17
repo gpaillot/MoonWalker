@@ -28,7 +28,7 @@
 #include "Motors.h"
 
 #define PI 3.141592653
-#define nTicksTour 9600.0
+#define nTicksTour 9500.0
 
 /*buld of the motor. address corresponds to the one of the CAN's PCB (ex: Minibot = 0x708)*/
 MyMotors::MyMotors(MyMCP2515 *myCan, MyDE0Nano *nano, int address, int motor)
@@ -133,14 +133,14 @@ double MyMotors::getPosition()
     this_nano->readWriteReg(READ, 0x01, (signed char*)buf, 4); // register read of PosEgdeTicks
     int right_wheel = -spi2data(buf); // converting char value into int value //minus sign for MW
     nTicks = right_wheel; 
-    printf("Left wheel position : %f\n",(((double) nTicks)/nTicksTour)*360.0);
+    printf("right wheel position : %f\n",(((double) nTicks)/nTicksTour*360));
     }
     else if (this_motor == 2) {
     makeData(buf, 0x00, 0x00, 0x00, 0x00, false);
     this_nano->readWriteReg(READ, 0x02, (signed char*)buf, 4);
-    int left_wheel = -spi2data(buf); // register read of PosEgdeTicks //minus sign for MW
+    int left_wheel = spi2data(buf); // register read of PosEgdeTicks //minus sign for MW
     nTicks = left_wheel;  
-    printf("Left wheel position : %f\n",(((double) nTicks)/nTicksTour)*360.0);
+    printf("Left wheel position : %f\n",(((double) nTicks)/nTicksTour*360));
     }
     return nTicks/nTicksTour*360;
     // dist parcourue et vitesse
@@ -161,7 +161,7 @@ double MyMotors::getSpeed() {
     else if (this_motor == 2) {
     makeData(buf, 0x00, 0x00, 0x00, 0x00, false);
     this_nano->readWriteReg(READ, 0x02, (signed char*)buf, 4);
-    int left_wheel = -spi2data(buf); // register read of PosEgdeTicks //minus sign for MW
+    int left_wheel = spi2data(buf); // register read of PosEgdeTicks //minus sign for MW
     //printf("Left wheel : %f\n",(((double)left_wheel)/nTicksTour)*360.0);
     nTicks = left_wheel;
     }
@@ -179,7 +179,7 @@ double MyMotors::getSpeed() {
     else if (this_motor == 2) {
     makeData(buf, 0x00, 0x00, 0x00, 0x00, false);
     this_nano->readWriteReg(READ, 0x02, (signed char*)buf, 4);
-    int left_wheel = -spi2data(buf); // register read of PosEgdeTicks //minus sign for MW
+    int left_wheel = spi2data(buf); // register read of PosEgdeTicks //minus sign for MW
     //printf("Left wheel : %f\n",(((double)left_wheel)/nTicksTour)*360.0);
     nTicks = left_wheel; 
     }

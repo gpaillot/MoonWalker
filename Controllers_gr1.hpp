@@ -15,17 +15,16 @@
 
 //NAMESPACE_INIT(ctrlGr1);
 
+void StructControl_init(CtrlStruct *cvs);// Initialiser la structure controle
 void displayControllers(CtrlStruct *cvs);
 
-double *LowLevelController(CtrlStruct *cvs, double *ref_speed, double Kp,  double Ki);
+double *PI_controller(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki);
+
+double *LowLevelController(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki);
 
 double *MiddleLevelController(CtrlStruct *cvs);
 
-double *PI_controller(double *ref_speed, CtrlStruct *cvs, double Kp, double Ki);
-
 double *Wheels_reference_speed(double vref,double wref);
-
-double EuclidianDistance(double x1,double y1,double x2,double y2);
 
 double Limiter(double input);
 

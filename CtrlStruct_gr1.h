@@ -41,9 +41,15 @@ typedef struct StructWheels
 // Controller structure
 typedef struct StructControl
 {
-    double Kp; // Coefficient for the P controller
-    double Ki; // Coefficient for I controller
-    double *sum_error; // sum of all errors
+  double Kp;          // Coefficient for the P controller
+  double Ki;          // Coefficient for I controller
+  double *sum_error;  // sum of all errors
+  double Kt;          // Anti-windup constant
+  double Tsample;     // sampling period
+  double *currentError;        // speed reference - measured speed
+  double *previousError;       // error from previous iteration
+  double *previousCommand;     // command from previous iteration
+  double *previousCommandLtd;  // limited command from previous iteration
 
 }StructControl;
 
