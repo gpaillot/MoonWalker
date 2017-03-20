@@ -9,6 +9,7 @@
 #include "ctrl_io.h"
 //#include "namespace_ctrl.h"
 #include <stdlib.h>
+//#include "Astar_struct_gr1.h"
 
 //NAMESPACE_INIT(ctrlGr1);
 
@@ -27,7 +28,7 @@ typedef struct StructTower
 } StructTower;
 
 // StructWheels
-typedef struct StructWheels
+typedef struct StructOdometry
 {
     int counter;///< simple variable
     double *prev_distance;
@@ -41,9 +42,20 @@ typedef struct StructWheels
 // Controller structure
 typedef struct StructControl
 {
-    double Kp; // Coefficient for the P controller
-    double Ki; // Coefficient for I controller
-    double *sum_error; // sum of all errors
+  double Kp; // Coefficient for the P controller
+  double Ki; // Coefficient for I controller
+  double sum_error[2]; // sum of all errors
+  double currentError[2];
+  double previousError[2];
+  double previousCommand[2];
+  double previousCommandLtd[2];
+  double errDist;
+  double errAngle;
+  int counterNode;
+  double command[2];
+  double Speed_ref[2];
+  double Kt;          // Anti-windup constant
+  double Tsample;     // sampling period
 
 }StructControl;
 
@@ -51,9 +63,13 @@ typedef struct StructControl
 
 typedef struct StructPathPlanning
 {
-
-
+  //Astar *astar;
 } StructPathPlanning;
+
+typedef struct StructFSM
+{
+  double test;
+} StructFSM;
 
 
 /// Main controller structure
@@ -61,13 +77,15 @@ typedef struct CtrlStruct
 {
 	CtrlIn *inputs;   ///< controller inputs
 	CtrlOut *outputs; ///< controller outputs
-
+	CtrlOut *py_outputs; ///< python controller outputs
 
   // Created structures
   StructTower *struct_tower;
-  StructWheels *struct_wheels;
+  StructOdometry *struct_odometry;
   StructControl *struct_control;
   StructPathPlanning *struct_path_planning;
+  StructFSM *struct_fsm;
+
 
 } CtrlStruct;
 

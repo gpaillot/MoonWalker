@@ -7,106 +7,252 @@
 //
 
 
+#include "MyIncludes_gr1.h"
 
-//#include "ctrl_main_gr1.h"
-//#include "namespace_ctrl.h"
-#include "Controllers_gr1.hpp"
-#include "CtrlStruct_gr1.h"
-#include <math.h>
-#include <stdlib.h>
-//#include "user_realtime.h"
 
 #define PI 3.141592653
 #define CARRE(X) (X)*(X)
 
-///NAMESPACE_INIT(ctrlGr1); // where X should be replaced by your group number
+#define RED   "\x1B[31m"
+#define GRN   "\x1B[32m"
+#define BLU   "\x1B[34m"
+#define RESET "\x1B[0m"
+#define MAG   "\x1B[35m"
+#define CYN   "\x1B[36m"
+//NAMESPACE_INIT(ctrlGr1); // where X should be replaced by your group number
+
+/* This function initializes the StructControl structure
+ *
+ * param[in] : cvs controller main structure
+ */
+
+void StructControl_init(CtrlStruct *cvs) // Initialiser la structure controle
+{
+  //cvs->struct_control->sum_error = (double *) malloc(2*sizeof(double));
+  cvs->struct_control->Kp = 0.0; //to be computed !!!!!
+  cvs->struct_control->Ki = 0.0; //to be computed !!!!!
+  cvs->struct_control->sum_error[0] = 0.0; // right wheel
+  cvs->struct_control->sum_error[1] = 0.0; // left wheel
+
+
+  cvs->struct_control->currentError[0] = 0.0;      // initial errors
+  cvs->struct_control->currentError[1] = 0.0;
+  cvs->struct_control->previousError[0] = 0.0;
+  cvs->struct_control->previousError[1] = 0.0;
+  cvs->struct_control->previousCommand[0] = 0.0;   // initial commands
+  cvs->struct_control->previousCommand[1] = 0.0;
+  cvs->struct_control->previousCommandLtd[0] = 0.0;
+  cvs->struct_control->previousCommandLtd[1] = 0.0;
+
+  cvs->struct_control->Speed_ref[0] = 0.0;
+  cvs->struct_control->Speed_ref[1] = 0.0;
+  
+  cvs->struct_control->errDist = 1000; //to be computed !!!!!
+  cvs->struct_control->errAngle = 1000; //to be computed !!!!!
+  cvs->struct_control->counterNode=0;
+  cvs->struct_control->command[0] = 0.0;
+  cvs->struct_control->command[1] = 0.0;
+
+  cvs->struct_control->Kt = 0.0;         // should not change
+  cvs->struct_control->Tsample = 0.040;   // sampling period (1ms)
+}
 
 void displayControllers(CtrlStruct *cvs)
 {
     printf("Controllers!\n");
 }
-double *PI_controller(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki)
+
+
+void Position_controller(double errDist, double errAngle,double KpDist, double KpAngle, double *command)
 {
-    // memory allocation for the return value
-    double *command;
-    command= (double *)malloc(sizeof(double)* 2);
-    
-    // calling for control structure => Ki, Kp, sum_error
-    
-    double sum_error_right = cvs->struct_control->sum_error[0];
-    double sum_error_left = cvs->struct_control->sum_error[1];
-    
-    // current speed
-    double curr_speed_right = cvs->inputs->r_wheel_speed;
-    double curr_speed_left = cvs->inputs->l_wheel_speed;
-    
-    //
-    double delta_t = 0.01;
-    double command_right, command_left;
-    double curr_error_right = ref_speed[0] - curr_speed_right; // speed error right wheel definition
-    double curr_error_left = ref_speed[1] - curr_speed_left; // speed error left wheeldefinition
-    
-    sum_error_right += curr_error_right;
-    sum_error_left += curr_error_left;
-    //printf("error = %f \n",sum_error_right);
-    //printf("current error = %f \n",curr_error_right) ;   
-    cvs->struct_control->sum_error[0] = sum_error_right;
-    cvs->struct_control->sum_error[1] = sum_error_left;
-    
-    command_right = Kp*curr_error_right + Ki*sum_error_right*delta_t;
-    command_left = Kp*curr_error_left + Ki*sum_error_left*delta_t;
-    
-    command[0] = command_right;
-    command[1] = command_left;
-    
-    return command;
-    
+  // memory allocation for the return value
+  //double *command;
+  //command= (double *)calloc(2,sizeof(double));
+  command[0]=KpDist*errDist; // v
+  command[1]=KpAngle*errAngle; // w
+  //return command;
 }
 
-double *LowLevelController(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki)
-{
-    double u_left_prime, u_right_prime, kphi, K;
-    kphi=26.1e-3;
-    K =1;
-    double *pi_contr = (double*)malloc(sizeof(double)*2);
-    double *u= (double*)malloc(sizeof(double)*2);
-    pi_contr = PI_controller(cvs,ref_speed,Kp,Ki);
-    
-    // limiter stage
-    u_right_prime = Limiter(pi_contr[0]);
-    u_left_prime = Limiter(pi_contr[1]);
-    
-    // Back EMF compenstation stages
-    u_right_prime  = u_right_prime + (kphi*14/K)*(cvs->inputs->r_wheel_speed);
-    u_left_prime = u_left_prime + (kphi*14/K)*(cvs->inputs->l_wheel_speed);
-    
-    // second limiter stage
-    u_right_prime = Limiter(u_right_prime);
-    u_left_prime = Limiter(u_left_prime);
-    
-    // variable assignation
-    u[0] = u_right_prime;
-    u[1] = u_left_prime;
-    
-    return u;
-}
 
-/* This function computes the forward and rotational speed to apply to reach the goal coordinates
+/*void FromHighToMiddleLevel(CtrlStruct *cvs,double *command)
+{
+  printf("Entering From High to middle level\n");
+  // Commande = ce qu'on retourne = [v,w]
+  //double *command; // v,w
+  //command= (double *)calloc(2,sizeof(double));
+  Astar *A = cvs->struct_path_planning->astar;
+  double errDist;
+  double errAngle;
+  int counterNode=cvs->struct_control->counterNode;
+  int length_path;
+  int *path;
+  if(A->isHardcoded) // Si j'utilise la map hardcodée
+  {
+    path=A->path; // Path generated by A*
+    length_path=A->length_path;
+  }
+  else // Use the path generated with only turnNodes
+  {
+    path=A->path_only_turns;
+    length_path=A->length_path_only_turns;
+  }
+
+
+  if(counterNode<length_path)
+  {
+    printf(RED "CounterNode: %d \n" RESET,counterNode);
+
+    // Position actuelle du robot
+    double position_x=cvs->struct_odometry->x_t;
+    double position_y=cvs->struct_odometry->y_t;
+
+    printf(RED "Position x: %f \n" RESET,position_x);
+    printf(RED "Position y: %f \n" RESET,position_y);
+
+    double theta=cvs->struct_odometry->theta_t;
+
+    Node *nextNode;
+    Node *nextNextNode;
+    printArray(path,A->length_path_only_turns);
+    nextNode=A->map[path[counterNode]];
+    printf(CYN "NextNode index: %d \n" RESET,A->map[path[counterNode]]->index);
+    printf(CYN "NextNode coordinates: %f,%f \n" RESET,A->map[path[counterNode]]->x,A->map[path[counterNode]]->y);
+
+    // Position du prochain noeud
+    double nextPosition_x= nextNode ->x;
+    double nextPosition_y= nextNode ->y;
+    printf(RED "nextposition x: %f \n" RESET,nextPosition_x);
+    printf(RED "nextposition y: %f \n" RESET,nextPosition_y);
+
+    // Position du prochain prochain noeud
+
+    // Orientation du noeud après le prochain noeud, comme ça on s'aligne avec le noeud après celui qu'on va a atteindre
+
+    // Différence position actuelle et prochain noeud
+    double diffx= nextPosition_x-position_x;
+    double diffy= nextPosition_y-position_y;
+
+    errDist = EuclidianDistance(nextPosition_x,nextPosition_y,position_x,position_y);
+    printf(BLU "Error distance : %f \n" RESET ,errDist );
+
+    printf(GRN "Robot orientation : %f \n" RESET ,(cvs->struct_odometry->theta_t)*180/3.14 );
+
+    errAngle = atan2(diffy,diffx)-cvs->struct_odometry->theta_t;
+    printf(GRN "Atan2 : %f \n" RESET ,(errAngle+ cvs->struct_odometry->theta_t)*180/3.14);
+
+    printf(GRN "Error angle : %f \n" RESET ,(errAngle)*180/3.14 );
+
+
+    if(errDist>100.0)
+    {
+      Position_controller(errDist,errAngle,0.5, 10,command);
+      printf(RED"Error distance bigger than 15 \n" RESET);
+
+    }
+
+    else
+    {
+      command[0]=0;
+      command[1]=0;
+      cvs->struct_control->counterNode++;
+    }
+  }
+  else
+  {
+    command[0]=0;
+    command[1]=0;
+  }
+  //return command;
+}*/
+
+
+/* This function computes the command to apply with a reference speed to follow
  *
  * param[in] : cvs controller main structure, table with speeds of the wheels
  * out : [xr,yr]
  */
-
-double *MiddleLevelController(CtrlStruct *cvs)
+void PI_controller(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki, double*command)
 {
-  double *speeds;
-  speeds= (double *)malloc(sizeof(double)* 2);
+    // memory allocation for the return value
 
-  speeds[0]=0; // Forward speed
-  speeds[1]=0; // Rotational speed
-  return speeds;
+    //command= (double *)calloc(2,sizeof(double));
+
+    // calling for control structure => Ki, Kp, sum_error
+
+
+    // current speed
+    double curr_speed_right = cvs->inputs->r_wheel_speed;
+    double curr_speed_left = cvs->inputs->l_wheel_speed;
+    // errors
+    cvs->struct_control->currentError[0] = ref_speed[0] - curr_speed_right;
+    cvs->struct_control->currentError[1] = ref_speed[1] - curr_speed_left;
+
+    // initializations and short names
+    double command_right, command_left;
+    double Tspl = cvs->struct_control->Tsample;
+    double CerrR = cvs->struct_control->currentError[0];
+    double CerrL = cvs->struct_control->currentError[1];
+    double PerrR = cvs->struct_control->previousError[0];
+    double PerrL = cvs->struct_control->previousError[1];
+    double commR = cvs->struct_control->previousCommand[0];
+    double commL = cvs->struct_control->previousCommand[1];
+    double commLtdR = cvs->struct_control->previousCommandLtd[0];
+    double commLtdL = cvs->struct_control->previousCommandLtd[1];
+    double Kt = cvs->struct_control->Kt;
+
+    command_right = ((Kp + Ki*Tspl)*CerrR - Kp*PerrR + Ki*Tspl*Kt*commLtdR + commR)/(Kt*Tspl*Ki + 1);
+    command_left  = ((Kp + Ki*Tspl)*CerrL - Kp*PerrL + Ki*Tspl*Kt*commLtdL + commL)/(Kt*Tspl*Ki + 1);
+
+    command[0] = command_right;
+    command[1] = command_left;
+
+    // assigning "previous" values to "current" ones
+    cvs->struct_control->previousError[0] = CerrR;
+    cvs->struct_control->previousError[1] = CerrL;
+    cvs->struct_control->previousCommand[0] = command_right;
+    cvs->struct_control->previousCommand[1] = command_left;
+    cvs->struct_control->previousCommandLtd[0] = Limiter(command_right);
+    cvs->struct_control->previousCommandLtd[1] = Limiter(command_left);
 }
 
+void LowLevelController(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki, double *command)
+{
+    //printf("Entering Low Level controller\n");
+    double u_left_prime, u_right_prime, kphi, K;
+    kphi=26.1e-3;
+    K =1;
+
+    //double *pi_contr;
+    //pi_contr= (double*)calloc(2,sizeof(double));
+
+    //double *u= (double*)calloc(2,sizeof(double));
+
+    PI_controller(cvs,ref_speed,Kp,Ki,command); // Vient mettr dans commande la sortie du PI
+    //printf("Low Level controller command 0: %f\n",command[0]);
+    //printf("Low Level controller command 1: %f\n",command[1]);
+
+    // limiter stage
+    u_right_prime = Limiter(command[0]); // Vient
+    u_left_prime = Limiter(command[1]);
+    //printf("Low Level controller limiter 0: %f\n",command[0]);
+    //printf("Low Level controller limiter 1: %f\n",command[1]);
+    // Back EMF compenstation stages
+    u_right_prime  = u_right_prime + (kphi/K)*(cvs->inputs->r_wheel_speed);
+    u_left_prime = u_left_prime + (kphi/K)*(cvs->inputs->l_wheel_speed);
+
+
+    // second limiter stage
+    u_right_prime = Limiter(u_right_prime);
+    u_left_prime = Limiter(u_left_prime);
+    // variable assignation
+    command[0] = u_right_prime; // Vient mettre dans commande les voltages
+    command[1] = u_left_prime;
+
+    //printf("Final Low level 0: %f\n",command[0]);
+    //printf("Final Low level 1: %f\n",command[1]);
+    //free(pi_contr);
+    //return u;
+}
 
 
 /* This function computes the command to each wheel with a reference vref and wref
@@ -114,25 +260,26 @@ double *MiddleLevelController(CtrlStruct *cvs)
  * param[in] : cvs controller main structure, table with speeds of the wheels
  * out : [xr,yr]
  */
-double *Wheels_reference_speed(double vref,double wref)
+ void MiddleLevelController(double vref,double wref,double *Speed_ref)
 {
     double l = 0.1125; // In meters!
     double r = 0.03;
 
-    double *speeds;
-    speeds= (double *)malloc(sizeof(double)* 2);
+  //  double *speeds;
+  //  speeds= (double *)malloc(sizeof(double)* 2);
 
 
     double right_speed = (vref+l*wref)/r;
     double left_speed = (vref-l*wref)/r;
 
-    speeds[0] = right_speed;
-    speeds[1] = left_speed;
+    Speed_ref[0] = right_speed;
+    Speed_ref[1] = left_speed;
 
-    return speeds;
+    //return speeds;
 }
+
 /*
- * Limiter block 
+ * Limiter block
  * => input : infinite range
  * => output bounded range between -100 and 100
  */
@@ -140,20 +287,20 @@ double *Wheels_reference_speed(double vref,double wref)
 double Limiter(double input)
 {
     double output;
-    if(input >90)
+    if(input >100)
     {
-        output = 90;
+        output = 100;
     }
-    else if(input < -90)
+    else if(input < -100)
     {
-        output = -90;
+        output = -100;
     }
     else
     {
         output = input;
     }
     return output;
-    
+
 }
 
 /* computation of Kp and Ki for the low_level controller
@@ -164,22 +311,33 @@ double Limiter(double input)
 double *Kp_Ki_Computation(double overshoot, double time_response)
 {
     double *output = (double*) malloc(sizeof(double)*2);
+
     double Ra =7.1; // résitance de l'induit
     double La=(0.265e-3); // inducantce de l'induit
     double kphi=26.1e-3;
     double J=0.58e-6;
     double Kv=9.66e-6;
     double K = 1;
-    
+
     double t_mechanical = J/Kv; // mechanical time constant
     double xsi = sqrt((CARRE(log(overshoot)))/((CARRE(PI))+ CARRE(log(overshoot))));
     double wn = 4/(xsi*time_response);
     double Ki = ((CARRE(wn))*Kv*Ra*t_mechanical)/(K*kphi);
     double Kp =((2*xsi*wn)*(Ra*Kv*t_mechanical) - Ra*Kv)/(K*kphi);
-    
-    output[0] = Kp;
+
+    output[0] = 14*Kp; // 14 is the reduction ratio
     output[1] = Ki;
     return output;
-    
-    
+
 }
+
+/* ATTENTION A MODIFIERRRRRRRRR POUR RETOURNER UN TABLEAU DE DEUX????
+*
+*
+*/
+
+void StructControl_free(CtrlStruct *cvs)
+{
+  free(cvs->struct_control->sum_error);
+}
+

@@ -42,7 +42,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/MyDE0Nano.o \
 	${OBJECTDIR}/MyMCP2515.o \
 	${OBJECTDIR}/Odometer.o \
-	${OBJECTDIR}/Wheels_gr1.o \
+	${OBJECTDIR}/Odometry_gr1.o \
 	${OBJECTDIR}/globals.o \
 	${OBJECTDIR}/initTourelle.o \
 	${OBJECTDIR}/main.o \
@@ -109,10 +109,10 @@ ${OBJECTDIR}/Odometer.o: Odometer.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Odometer.o Odometer.cpp
 
-${OBJECTDIR}/Wheels_gr1.o: Wheels_gr1.cpp
+${OBJECTDIR}/Odometry_gr1.o: Odometry_gr1.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Wheels_gr1.o Wheels_gr1.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Odometry_gr1.o Odometry_gr1.cpp
 
 ${OBJECTDIR}/globals.o: globals.cpp
 	${MKDIR} -p ${OBJECTDIR}

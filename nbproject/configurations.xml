@@ -9,9 +9,10 @@
       <itemPath>GPIOClass.h</itemPath>
       <itemPath>Motors.h</itemPath>
       <itemPath>MyDE0Nano.h</itemPath>
+      <itemPath>MyIncludes_gr1.h</itemPath>
       <itemPath>MyMCP2515.h</itemPath>
       <itemPath>Odometer.h</itemPath>
-      <itemPath>Wheels_gr1.hpp</itemPath>
+      <itemPath>Odometry_gr1.hpp</itemPath>
       <itemPath>ctrl_io.h</itemPath>
       <itemPath>globals.h</itemPath>
       <itemPath>initTourelle.h</itemPath>
@@ -32,7 +33,7 @@
       <itemPath>MyDE0Nano.cpp</itemPath>
       <itemPath>MyMCP2515.cpp</itemPath>
       <itemPath>Odometer.cpp</itemPath>
-      <itemPath>Wheels_gr1.cpp</itemPath>
+      <itemPath>Odometry_gr1.cpp</itemPath>
       <itemPath>globals.cpp</itemPath>
       <itemPath>initTourelle.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
@@ -88,6 +89,8 @@
       </item>
       <item path="MyDE0Nano.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="MyIncludes_gr1.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="MyMCP2515.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MyMCP2515.h" ex="false" tool="3" flavor2="0">
@@ -96,9 +99,9 @@
       </item>
       <item path="Odometer.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Wheels_gr1.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Odometry_gr1.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="Wheels_gr1.hpp" ex="false" tool="3" flavor2="0">
+      <item path="Odometry_gr1.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ctrl_io.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -161,6 +164,8 @@
       </item>
       <item path="MyDE0Nano.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="MyIncludes_gr1.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="MyMCP2515.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="MyMCP2515.h" ex="false" tool="3" flavor2="0">
@@ -169,9 +174,9 @@
       </item>
       <item path="Odometer.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Wheels_gr1.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Odometry_gr1.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="Wheels_gr1.hpp" ex="false" tool="3" flavor2="0">
+      <item path="Odometry_gr1.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ctrl_io.h" ex="false" tool="3" flavor2="0">
       </item>

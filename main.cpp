@@ -96,11 +96,7 @@ int main(int argc, char** argv) {
     atab->motorR = motorsright;
     atab->motorL = motorsleft;
     atab->MyStruct = MyStruct;
-    
-   double *KpKi =Kp_Ki_Computation(0.02, 10e-3);
-   double *wheel_ref = Wheels_reference_speed(0.2,0.0);
-   double *commande_vitesse;
-   double *xsiR;
+
    pthread_t threadMotorRight,threadMotorLeft;
    int retRight = pthread_create(&threadMotorRight, NULL, ThreadMotorR, (void*)atab);
    int retLeft = pthread_create(&threadMotorLeft, NULL, ThreadMotorL, (void*)atab);
@@ -112,25 +108,22 @@ int main(int argc, char** argv) {
    {
        printf("failed in thread for right motor creation\n");
    }
+   double *KpKi = Kp_Ki_Computation(0.04,0.01);
+   printf("Kp = %f \n", KpKi[0]);
+   printf("Ki = %f \n", KpKi[1]);
+   MiddleLevelController(0.3,0.0,MyStruct->struct_control->Speed_ref);
    double duration;
    clock_t start,end;
-  /* char buf[4] = {0x00, 0x00, 0x00, 0x00};
-   while(1) {
-    makeData(buf, 0x00, 0x00, 0x00, 0x00, false);
-    nano->readWriteReg(READ, 0x01, (signed char*)buf, 4); // register read of PosEgdeTicks
-    int number_of_tics = spi2data(buf);
-    printf("number of tics = %d \n", number_of_tics);
-    time_sleep(0.5);
-   }*/
-   /*while(1)
+   while(1)
    { 
         start = clock(); 
-        commande_vitesse =  LowLevelController(MyStruct,wheel_ref, 3.54, 20.449);
-        motorsright.setSpeed(commande_vitesse[0]);
-        motorsleft.setSpeed(commande_vitesse[1]);
+        LowLevelController(MyStruct,MyStruct->struct_control->Speed_ref,1*KpKi[0],1*KpKi[1],MyStruct->struct_control->command);
+        motorsright.setSpeed(MyStruct->struct_control->command[0]);
+        motorsleft.setSpeed(0);
+        //printf("Speed ref right : %f\n",MyStruct->struct_control->Speed_ref[0]);
 
-        xsiR = xsiRWheels(MyStruct);
-        displayWheels(MyStruct);
+        //xsiR = xsiRWheels(MyStruct);
+        //displayWheels(MyStruct);
         //printf("wheel_ref_gauche: %f \n",wheel_ref[1]);
         //printf("wheel_ref_droite: %f \n",wheel_ref[0]);
         //printf("commande_gauche: %f \n",commande_vitesse[1]);
@@ -140,7 +133,7 @@ int main(int argc, char** argv) {
        
        
        
-   }*/
+   }
     
    int speedLeft = 0;
    int speedRight = 10;
