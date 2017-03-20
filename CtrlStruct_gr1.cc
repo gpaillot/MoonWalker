@@ -1,5 +1,4 @@
 #include "CtrlStruct_gr1.h"
-#include "Controllers_gr1.hpp"
 //#include "namespace_ctrl.h"
 
 //NAMESPACE_INIT(ctrlGr1);
@@ -56,9 +55,16 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
     // initial position  = 0
     cvs->struct_wheels->prev_speed[0] = 0.0;
     cvs->struct_wheels->prev_speed[1] = 0.0;
-    
+
+    // Structure for the ontroller : definition
     cvs->struct_control = (StructControl *) malloc(sizeof(StructControl));
-    StructControl_init(cvs);
+    cvs->struct_control->sum_error = (double *) malloc(2*sizeof(double));
+    cvs->struct_control->Kp = 0.0; //to be computed
+    cvs->struct_control->Ki = 0.0; //to be computed
+
+    // initial errors on both wheels = 0; 0 = right wheel; 1 = left wheel
+    cvs->struct_control->sum_error[0] = 0.0; // right wheel
+    cvs->struct_control->sum_error[1] = 0.0; // left wheel
 
 	return cvs;
 }
@@ -83,12 +89,6 @@ void free_CtrlStruct(CtrlStruct *cvs)
     free(cvs->struct_wheels);
     // struct. for control
     free(cvs->struct_control->sum_error);
-    free(cvs->struct_control->currentError);
-    free(cvs->struct_control->previousError);
-    free(cvs->struct_control->previousCommand);
-    free(cvs->struct_control->previousCommandLtd);
-    
-    
     free(cvs->struct_control);
      free(cvs);
     // free the global structure

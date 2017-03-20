@@ -31,7 +31,6 @@
 #include "globals.h"
 #include "tourelle.h"
 #include "ctrl_io.h"
-#include "Odometer.h"
 #include "Wheels_gr1.hpp"
 #include <pthread.h>
 #include <time.h>
@@ -54,8 +53,8 @@ void * ThreadMotorR(void *atab)
     args *In_pthread = (args*) atab;
     while(1)
     {
-        In_pthread->MyStruct->inputs->r_wheel_speed = In_pthread->motorR.getSpeed(); 
-        printf("right: %f \t",In_pthread->MyStruct->inputs->r_wheel_speed);
+        In_pthread->MyStruct->inputs->r_wheel_speed = (In_pthread->motorR.getSpeed()); 
+        printf("%f \t",In_pthread->MyStruct->inputs->r_wheel_speed);
     }
 }
 void * ThreadMotorL(void *atab)
@@ -63,14 +62,15 @@ void * ThreadMotorL(void *atab)
     args *In_pthread = (args*) atab;
     while(1)
     {
-        In_pthread->MyStruct->inputs->l_wheel_speed = In_pthread->motorL.getSpeed();
-        printf("left: %f \n",In_pthread->MyStruct->inputs->l_wheel_speed);
+        In_pthread->MyStruct->inputs->l_wheel_speed = (In_pthread->motorL.getSpeed());
+        printf("%f \n",In_pthread->MyStruct->inputs->l_wheel_speed);
     }
 }
 
 
 int main(int argc, char** argv) {
    
+    gpioInitialise();
     MyMCP2515 *MyCAN = new MyMCP2515();
     MyCAN->doInit();
     MyDE0Nano *nano = new MyDE0Nano();
@@ -78,8 +78,6 @@ int main(int argc, char** argv) {
     MyTourelle tourelle(MyCAN, nano, 0x508);
     MyMotors motorsright(MyCAN, nano, 0x708,1);
     MyMotors motorsleft(MyCAN, nano, 0x708,2);
-    MyOdometers odoright(nano,1);
-    MyOdometers odoleft(nano,2);
     nano->reset();
     
     CtrlIn *In;
@@ -99,7 +97,7 @@ int main(int argc, char** argv) {
     atab->motorL = motorsleft;
     atab->MyStruct = MyStruct;
     
-   double *KpKi =Kp_Ki_Computation(0.04, 0.01);
+   double *KpKi =Kp_Ki_Computation(0.02, 10e-3);
    double *wheel_ref = Wheels_reference_speed(0.2,0.0);
    double *commande_vitesse;
    double *xsiR;
@@ -116,45 +114,43 @@ int main(int argc, char** argv) {
    }
    double duration;
    clock_t start,end;
-   /*char buf[4] = {0x00, 0x00, 0x00, 0x00};
+  /* char buf[4] = {0x00, 0x00, 0x00, 0x00};
    while(1) {
     makeData(buf, 0x00, 0x00, 0x00, 0x00, false);
     nano->readWriteReg(READ, 0x01, (signed char*)buf, 4); // register read of PosEgdeTicks
     int number_of_tics = spi2data(buf);
     printf("number of tics = %d \n", number_of_tics);
     time_sleep(0.5);
-   } */
-    while(1)
+   }*/
+   /*while(1)
    { 
         start = clock(); 
-        commande_vitesse =  LowLevelController(MyStruct,wheel_ref, KpKi[0], KpKi[1]);
+        commande_vitesse =  LowLevelController(MyStruct,wheel_ref, 3.54, 20.449);
         motorsright.setSpeed(commande_vitesse[0]);
         motorsleft.setSpeed(commande_vitesse[1]);
 
         xsiR = xsiRWheels(MyStruct);
         displayWheels(MyStruct);
-        
-        printf("wheel_ref_gauche: %f \n",wheel_ref[1]);
-        printf("wheel_ref_droite: %f \n",wheel_ref[0]);
-        printf("commande_gauche: %f \n",commande_vitesse[1]);
-        printf("comande_droite: %f \n",commande_vitesse[0]);
+        //printf("wheel_ref_gauche: %f \n",wheel_ref[1]);
+        //printf("wheel_ref_droite: %f \n",wheel_ref[0]);
+        //printf("commande_gauche: %f \n",commande_vitesse[1]);
+        //printf("comande_droite: %f \n",commande_vitesse[0]);
         duration = (double) (clock()-start)/CLOCKS_PER_SEC;
-        printf("time duration = %f \n \n \n", duration);
+        //printf("time duration = %f \n \n \n", duration);
        
        
        
-   }
+   }*/
     
-   int speedLeft = 5;
-   int speedRight = 5;
+   int speedLeft = 0;
+   int speedRight = 10;
     
-    motorsright.setLed(true);
+    motorsright.setLed(false);
     //tourelle.setLed(false);
     //tourelle.setSpeed(-25);
     motorsleft.setSpeed(speedLeft);
     motorsright.setSpeed(speedRight);
-    //motorsright.setSpeed(speedRight);
-    time_sleep(3.25);
+    time_sleep(0.98);
    // motorsleft.getSpeed();
     //motorsright.getSpeed();
     //tourelle.setBrake(true);
@@ -164,9 +160,7 @@ int main(int argc, char** argv) {
     //motorsright.setBrake(true);
     motorsleft.getPosition();
     motorsright.getPosition();
-    odoright.getOdometersPosition();
-    odoleft.getOdometersPosition();
-    sleep(1);
+
     return 0;
 }
 
