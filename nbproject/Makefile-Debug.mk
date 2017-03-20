@@ -37,6 +37,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/Controllers_gr1.o \
 	${OBJECTDIR}/CtrlStruct_gr1.o \
+	${OBJECTDIR}/Electrovannes.o \
 	${OBJECTDIR}/GPIOClass.o \
 	${OBJECTDIR}/Motors.o \
 	${OBJECTDIR}/MyDE0Nano.o \
@@ -83,6 +84,11 @@ ${OBJECTDIR}/CtrlStruct_gr1.o: CtrlStruct_gr1.cc
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/CtrlStruct_gr1.o CtrlStruct_gr1.cc
+
+${OBJECTDIR}/Electrovannes.o: Electrovannes.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Electrovannes.o Electrovannes.cpp
 
 ${OBJECTDIR}/GPIOClass.o: GPIOClass.cpp
 	${MKDIR} -p ${OBJECTDIR}

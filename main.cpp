@@ -78,6 +78,9 @@ int main(int argc, char** argv) {
     MyTourelle tourelle(MyCAN, nano, 0x508);
     MyMotors motorsright(MyCAN, nano, 0x708,1);
     MyMotors motorsleft(MyCAN, nano, 0x708,2);
+    
+    MyVannes electrovannes = new MyVannes();
+    electrovannes = MyVannes(MyCAN,0x308);
     nano->reset();
     
     CtrlIn *In;
@@ -114,7 +117,7 @@ int main(int argc, char** argv) {
    MiddleLevelController(0.3,0.0,MyStruct->struct_control->Speed_ref);
    double duration;
    clock_t start,end;
-   while(1)
+   /*while(1)
    { 
         start = clock(); 
         LowLevelController(MyStruct,MyStruct->struct_control->Speed_ref,1*KpKi[0],1*KpKi[1],MyStruct->struct_control->command);
@@ -133,11 +136,13 @@ int main(int argc, char** argv) {
        
        
        
-   }
+   }*/
     
+   
    int speedLeft = 0;
    int speedRight = 10;
     
+   electrovannes.setLed(true);
     motorsright.setLed(false);
     //tourelle.setLed(false);
     //tourelle.setSpeed(-25);

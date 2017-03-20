@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>Controllers_gr1.hpp</itemPath>
       <itemPath>CtrlStruct_gr1.h</itemPath>
+      <itemPath>Electrovannes.h</itemPath>
       <itemPath>GPIOClass.h</itemPath>
       <itemPath>Motors.h</itemPath>
       <itemPath>MyDE0Nano.h</itemPath>
@@ -28,6 +29,7 @@
                    projectFiles="true">
       <itemPath>Controllers_gr1.cpp</itemPath>
       <itemPath>CtrlStruct_gr1.cc</itemPath>
+      <itemPath>Electrovannes.cpp</itemPath>
       <itemPath>GPIOClass.cpp</itemPath>
       <itemPath>Motors.cpp</itemPath>
       <itemPath>MyDE0Nano.cpp</itemPath>
@@ -76,6 +78,10 @@
       <item path="CtrlStruct_gr1.cc" ex="false" tool="1" flavor2="0">
       </item>
       <item path="CtrlStruct_gr1.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Electrovannes.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Electrovannes.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="GPIOClass.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -151,6 +157,10 @@
       <item path="CtrlStruct_gr1.cc" ex="false" tool="1" flavor2="0">
       </item>
       <item path="CtrlStruct_gr1.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Electrovannes.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Electrovannes.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="GPIOClass.cpp" ex="false" tool="1" flavor2="0">
       </item>
