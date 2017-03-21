@@ -39,21 +39,28 @@ void MyVannes::setLed(bool activate){
     
     if(activate)
     {
+         makeData(data,GPLAT+offset,0x4f,0x4f,0x00,true);
+        this_can->doSendMsg(this_address,data,3,0x00);
+        time_sleep(0.001);
         makeData(data,GPLAT+offset,mask_led_vanne,mask_led_vanne,0x00,true);
         this_can->doSendMsg(this_address,data,3,0x00);
     }
     else
     {
+        makeData(data,GPLAT+offset,0xff,0x00,0x00,true);
+        this_can->doSendMsg(this_address,data,3,0x00);
+        time_sleep(0.001);
         makeData(data,GPLAT+offset,mask_led_vanne,0x00,0x00,true);
         this_can->doSendMsg(this_address,data,3,0x00);
     }
 }
 
 void MyVannes::setVanne(int vanne){
-    
+    printf("whaaaaaaaaaaaaaaaaaaaaaaaaaaaaat \n");
     switch(vanne) {
         case 1:
-            makeData(data,GPLAT+offset,mask_vanne_1,mask_vanne_1,0x00,true);
+            printf("OK========================================== \n");
+            makeData(data,GPLAT+offset, mask_vanne_1, mask_vanne_1,0x00,true);
             this_can->doSendMsg(this_address,data,3,0x00);
             break;
         case 2:
