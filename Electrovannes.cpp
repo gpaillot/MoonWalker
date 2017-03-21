@@ -53,19 +53,19 @@ void MyVannes::setVanne(int vanne){
     
     switch(vanne) {
         case 1:
-            makeData(data,GPLAT+offset,mask_led_vanne,mask_led_vanne,0x00,true);
+            makeData(data,GPLAT+offset,mask_vanne_1,mask_vanne_1,0x00,true);
             this_can->doSendMsg(this_address,data,3,0x00);
             break;
         case 2:
-            makeData(data,GPLAT+offset,mask_led_vanne,mask_led_vanne,0x00,true);
+            makeData(data,GPLAT+offset,mask_vanne_2,mask_vanne_2,0x00,true);
             this_can->doSendMsg(this_address,data,3,0x00);
             break;
         case 3:
-            makeData(data,GPLAT+offset,mask_led_vanne,mask_led_vanne,0x00,true);
+            makeData(data,GPLAT+offset,mask_vanne_3,mask_vanne_3,0x00,true);
             this_can->doSendMsg(this_address,data,3,0x00);
             break;
         case 4:
-            makeData(data,GPLAT+offset,mask_led_vanne,mask_led_vanne,0x00,true);
+            makeData(data,GPLAT+offset,mask_vanne_4,mask_vanne_4,0x00,true);
             this_can->doSendMsg(this_address,data,3,0x00);
             break;
             

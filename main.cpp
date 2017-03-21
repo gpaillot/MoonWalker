@@ -34,6 +34,7 @@
 #include "Wheels_gr1.hpp"
 #include <pthread.h>
 #include <time.h>
+#include "Electrovannes.h"
 using namespace std;
 
 /*
@@ -79,8 +80,7 @@ int main(int argc, char** argv) {
     MyMotors motorsright(MyCAN, nano, 0x708,1);
     MyMotors motorsleft(MyCAN, nano, 0x708,2);
     
-    MyVannes electrovannes = new MyVannes();
-    electrovannes = MyVannes(MyCAN,0x308);
+    MyVannes electrovannes(MyCAN,0x408);
     nano->reset();
     
     CtrlIn *In;
@@ -142,13 +142,15 @@ int main(int argc, char** argv) {
    int speedLeft = 0;
    int speedRight = 10;
     
-   electrovannes.setLed(true);
-    motorsright.setLed(false);
+   electrovannes.setLed(false);
+   time_sleep(10);
+   electrovannes.setVanne(1);
+   motorsright.setLed(true);
     //tourelle.setLed(false);
     //tourelle.setSpeed(-25);
-    motorsleft.setSpeed(speedLeft);
-    motorsright.setSpeed(speedRight);
-    time_sleep(0.98);
+    //motorsleft.setSpeed(speedLeft);
+    //motorsright.setSpeed(speedRight);
+    time_sleep(2.98);
    // motorsleft.getSpeed();
     //motorsright.getSpeed();
     //tourelle.setBrake(true);

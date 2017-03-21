@@ -32,6 +32,11 @@
 #define mask_brake 0x10  
 #define mask_brake2 0x20
 #define mask_led_vanne 0x40 
+#define mask_vanne_1 0x01
+#define mask_vanne_2 0x02
+#define mask_vanne_3 0x04
+#define mask_vanne_4 0x08
+
 
 class MyVannes{
 public: 
