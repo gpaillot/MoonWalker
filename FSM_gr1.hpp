@@ -12,7 +12,8 @@
 #include <stdio.h>
 NAMESPACE_INIT(ctrlGr1);
 void StructFSM_init(CtrlStruct *cvs);
-
+void matchFSM(CtrlStruct *cvs);
+void StructFSM_free(CtrlStruct *cvs);
 NAMESPACE_CLOSE();
 
 #endif /* FSM_gr1_hpp */

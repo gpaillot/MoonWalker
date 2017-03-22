@@ -14,10 +14,10 @@
 #define MAG   "\x1B[35m"
 #define CYN   "\x1B[36m"
 
-#define NBR_NODES 27
-#define NBR_ADJ 8 // 4 if Harcode, else 8
+#define NBR_NODES 30
+#define NBR_ADJ 5 // 5 if Harcode, else 8
 
-//NAMESPACE_INIT(ctrlGr1);
+NAMESPACE_INIT(ctrlGr1);
 
 /**********************************
 ***********************************
@@ -45,13 +45,13 @@ void Astar_init(CtrlStruct *cvs) // Pour initialiser le Astar
   double intervaly=0.0;
   double intervalPythagore=0.0;
 
-  Create_map(myAstar,lign_x,lign_y);
-
-  //Create_map_hardcoded(myAstar);
+  //Create_map(myAstar,lign_x,lign_y);
+  printf(GRN "ASTAR INIT\n" RESET);
+  Create_map_hardcoded(myAstar);
 
   // Define the obstacles after the map is created!
 
-  DefineEurobotTable(myAstar,50);
+  //DefineEurobotTable(myAstar,50);
   myAstar->closedList =  (int*) calloc(nbr_nodes,sizeof(int));
   myAstar->openList = (int*) calloc(nbr_nodes,sizeof(int));
   myAstar->length_open=0;
@@ -59,6 +59,7 @@ void Astar_init(CtrlStruct *cvs) // Pour initialiser le Astar
   myAstar->length_path=1;
   myAstar->nTurn=0;
   myAstar->length_path_only_turns=0;
+  cvs->struct_control->counterNode=0;
 
 
   cvs->struct_path_planning->astar=myAstar; // Pour assigner myAstar, que je viens de créer, au Astar de ma structure path planning
@@ -290,7 +291,7 @@ void Create_map_hardcoded(Astar *A)
   for (int i = 0; i < nbr_nodes; i++)
   {
     A->map[i] = (Node*) malloc(sizeof(Node));
-    A->map[i]->adjacent = (int*) calloc(4,sizeof(int));
+    A->map[i]->adjacent = (int*) calloc(NBR_ADJ,sizeof(int));
 
     /* Définir les attributs de chaque Node = initialisation des nodes */
 
@@ -308,197 +309,249 @@ void Create_map_hardcoded(Astar *A)
 
   // Définir les coordonnées de tous les noeuds
 
-  A->map[0]->x=-400;
-  A->map[0]->y=-1250;
-  A->map[0]->adjacent[0]=4;
-  A->map[0]->adjacent[1]=5;
-  A->map[0]->adjacent[2]=1;
+  A->map[0]->x=-850;
+  A->map[0]->y=-1400;
+  A->map[0]->adjacent[0]=5;
+  A->map[0]->adjacent[1]=-1;
+  A->map[0]->adjacent[2]=-1;
   A->map[0]->adjacent[3]=-1;
+  A->map[0]->adjacent[4]=-1;
+
+  A->map[1]->x=-850;
+  A->map[1]->y=-1150;
+  A->map[1]->adjacent[0]=5;
+  A->map[1]->adjacent[1]=-1;
+  A->map[1]->adjacent[2]=-1;
+  A->map[1]->adjacent[3]=-1;
+  A->map[1]->adjacent[4]=-1;
 
 
-  A->map[1]->x=0;
-  A->map[1]->y=-1200;
-  A->map[1]->adjacent[0]=0;
-  A->map[1]->adjacent[1]=5;
-  A->map[1]->adjacent[2]=6;
-  A->map[1]->adjacent[3]=2;
-
-
-  A->map[2]->x=800;
-  A->map[2]->y=-1300;
-  A->map[2]->adjacent[0]=1;
+  A->map[2]->x=-400;
+  A->map[2]->y=-1250;
+  A->map[2]->adjacent[0]=6;
   A->map[2]->adjacent[1]=7;
-  A->map[2]->adjacent[2]=8;
+  A->map[2]->adjacent[2]=3;
   A->map[2]->adjacent[3]=-1;
+  A->map[2]->adjacent[4]=-1;
 
-  A->map[3]->x=-850;
-  A->map[3]->y=-620;
-  A->map[3]->adjacent[0]=4;
-  A->map[3]->adjacent[1]=9;
-  A->map[3]->adjacent[2]=-1;
-  A->map[3]->adjacent[3]=-1;
 
-  A->map[4]->x=-530;
-  A->map[4]->y=-620;
+  A->map[3]->x=0;
+  A->map[3]->y=-1200;
+  A->map[3]->adjacent[0]=2;
+  A->map[3]->adjacent[1]=7;
+  A->map[3]->adjacent[2]=8;
+  A->map[3]->adjacent[3]=4;
+  A->map[3]->adjacent[4]=9;
+
+
+  A->map[4]->x=800;
+  A->map[4]->y=-1300;
   A->map[4]->adjacent[0]=3;
-  A->map[4]->adjacent[1]=10;
-  A->map[4]->adjacent[2]=5;
-  A->map[4]->adjacent[3]=0;
+  A->map[4]->adjacent[1]=9;
+  A->map[4]->adjacent[2]=8;
+  A->map[4]->adjacent[3]=-1;
+  A->map[4]->adjacent[4]=-1;
 
-  A->map[5]->x=-200;
-  A->map[5]->y=-855;
-  A->map[5]->adjacent[0]=0;
-  A->map[5]->adjacent[1]=4;
-  A->map[5]->adjacent[2]=10;
-  A->map[5]->adjacent[3]=6;
+  A->map[5]->x=-850;
+  A->map[5]->y=-620;
+  A->map[5]->adjacent[0]=6;
+  A->map[5]->adjacent[1]=15;
+  A->map[5]->adjacent[2]=14;
+  A->map[5]->adjacent[3]=0;
+  A->map[5]->adjacent[4]=1;
 
-  A->map[6]->x=133;
-  A->map[6]->y=-855;
+  A->map[6]->x=-530;
+  A->map[6]->y=-620;
   A->map[6]->adjacent[0]=5;
-  A->map[6]->adjacent[1]=1;
+  A->map[6]->adjacent[1]=12;
   A->map[6]->adjacent[2]=7;
-  A->map[6]->adjacent[3]=10;
+  A->map[6]->adjacent[3]=11;
+  A->map[6]->adjacent[4]=2;
 
-  A->map[7]->x=530;
+  A->map[7]->x=-200;
   A->map[7]->y=-855;
-  A->map[7]->adjacent[0]=6;
-  A->map[7]->adjacent[1]=1;
-  A->map[7]->adjacent[2]=2;
+  A->map[7]->adjacent[0]=2;
+  A->map[7]->adjacent[1]=6;
+  A->map[7]->adjacent[2]=3;
   A->map[7]->adjacent[3]=8;
+  A->map[7]->adjacent[4]=11;
 
-  A->map[8]->x=800;
-  A->map[8]->y=-550;
-  A->map[8]->adjacent[0]=7;
-  A->map[8]->adjacent[1]=2;
-  A->map[8]->adjacent[2]=-1;
-  A->map[8]->adjacent[3]=-1;
+  A->map[8]->x=133;
+  A->map[8]->y=-855;
+  A->map[8]->adjacent[0]=4;
+  A->map[8]->adjacent[1]=9;
+  A->map[8]->adjacent[2]=11;
+  A->map[8]->adjacent[3]=7;
+  A->map[8]->adjacent[4]=3;
 
-  A->map[9]->x=-530;
-  A->map[9]->y=-250;
-  A->map[9]->adjacent[0]=3;
-  A->map[9]->adjacent[1]=4;
-  A->map[9]->adjacent[2]=10;
-  A->map[9]->adjacent[3]=11;
+  A->map[9]->x=530;
+  A->map[9]->y=-855;
+  A->map[9]->adjacent[0]=8;
+  A->map[9]->adjacent[1]=10;
+  A->map[9]->adjacent[2]=3;
+  A->map[9]->adjacent[3]=4;
+  A->map[9]->adjacent[4]=-1;
 
-  A->map[10]->x=-200;
-  A->map[10]->y=-465;
+  A->map[10]->x=800;
+  A->map[10]->y=-550;
   A->map[10]->adjacent[0]=9;
   A->map[10]->adjacent[1]=4;
-  A->map[10]->adjacent[2]=5;
-  A->map[10]->adjacent[3]=11;
+  A->map[10]->adjacent[2]=-1;
+  A->map[10]->adjacent[3]=-1;
+  A->map[10]->adjacent[4]=-1;
 
   A->map[11]->x=0;
-  A->map[11]->y=0;
-  A->map[11]->adjacent[0]=9;
-  A->map[11]->adjacent[1]=10;
+  A->map[11]->y=-666;
+  A->map[11]->adjacent[0]=13;
+  A->map[11]->adjacent[1]=8;
   A->map[11]->adjacent[2]=12;
-  A->map[11]->adjacent[3]=13;
+  A->map[11]->adjacent[3]=7;
+  A->map[11]->adjacent[4]=6;
 
-  A->map[12]->x=-530;
-  A->map[12]->y=250;
-  A->map[12]->adjacent[0]=11;
+  A->map[12]->x=-200;
+  A->map[12]->y=-465;
+  A->map[12]->adjacent[0]=6;
   A->map[12]->adjacent[1]=13;
-  A->map[12]->adjacent[2]=16;
+  A->map[12]->adjacent[2]=11;
   A->map[12]->adjacent[3]=15;
+  A->map[12]->adjacent[4]=-1;
 
-  A->map[13]->x=-200;
-  A->map[13]->y=465;
-  A->map[13]->adjacent[0]=15;
-  A->map[13]->adjacent[1]=16;
-  A->map[13]->adjacent[2]=17;
-  A->map[13]->adjacent[3]=18;
+  A->map[13]->x=0;
+  A->map[13]->y=-266;
+  A->map[13]->adjacent[0]=12;
+  A->map[13]->adjacent[1]=15;
+  A->map[13]->adjacent[2]=14;
+  A->map[13]->adjacent[3]=-1;
+  A->map[13]->adjacent[4]=-1;
 
-  A->map[14]->x=800;
-  A->map[14]->y=550;
-  A->map[14]->adjacent[0]=19;
-  A->map[14]->adjacent[1]=22;
-  A->map[14]->adjacent[2]=-1;
-  A->map[14]->adjacent[3]=-1;
+  A->map[14]->x=0;
+  A->map[14]->y=0;
+  A->map[14]->adjacent[0]=5;
+  A->map[14]->adjacent[1]=15;
+  A->map[14]->adjacent[2]=17;
+  A->map[14]->adjacent[3]=16;
+  A->map[14]->adjacent[4]=13;
 
-  A->map[15]->x=-850;
-  A->map[15]->y=620;
-  A->map[15]->adjacent[0]=12;
-  A->map[15]->adjacent[1]=13;
-  A->map[15]->adjacent[2]=16;
-  A->map[15]->adjacent[3]=-1;
 
-  A->map[16]->x=-530;
-  A->map[16]->y=620;
+  A->map[15]->x=-530;
+  A->map[15]->y=0;
+  A->map[15]->adjacent[0]=5;
+  A->map[15]->adjacent[1]=17;
+  A->map[15]->adjacent[2]=18;
+  A->map[15]->adjacent[3]=12;
+  A->map[15]->adjacent[4]=14;
+
+  A->map[16]->x=0;
+  A->map[16]->y=266;
   A->map[16]->adjacent[0]=15;
-  A->map[16]->adjacent[1]=12;
-  A->map[16]->adjacent[2]=13;
-  A->map[16]->adjacent[3]=17;
+  A->map[16]->adjacent[1]=18;
+  A->map[16]->adjacent[2]=14;
+  A->map[16]->adjacent[3]=20;
+  A->map[16]->adjacent[4]=-1;
 
-  A->map[17]->x=-200;
-  A->map[17]->y=855;
-  A->map[17]->adjacent[0]=13;
-  A->map[17]->adjacent[1]=16;
-  A->map[17]->adjacent[2]=18;
-  A->map[17]->adjacent[3]=20;
+  A->map[17]->x=-850;
+  A->map[17]->y=620;
+  A->map[17]->adjacent[0]=25;
+  A->map[17]->adjacent[1]=26;
+  A->map[17]->adjacent[2]=19;
+  A->map[17]->adjacent[3]=15;
+  A->map[17]->adjacent[4]=14;
 
-  A->map[18]->x=133;
-  A->map[18]->y=855;
-  A->map[18]->adjacent[0]=13;
-  A->map[18]->adjacent[1]=17;
-  A->map[18]->adjacent[2]=21;
-  A->map[18]->adjacent[3]=19;
+  A->map[18]->x=-200;
+  A->map[18]->y=465;
+  A->map[18]->adjacent[0]=15;
+  A->map[18]->adjacent[1]=-1;
+  A->map[18]->adjacent[2]=16;
+  A->map[18]->adjacent[3]=20;
+  A->map[18]->adjacent[4]=19;
 
-  A->map[19]->x=530;
-  A->map[19]->y=855;
-  A->map[19]->adjacent[0]=18;
-  A->map[19]->adjacent[1]=14;
-  A->map[19]->adjacent[2]=22;
-  A->map[19]->adjacent[3]=-1;
+  A->map[19]->x=-530;
+  A->map[19]->y=620;
+  A->map[19]->adjacent[0]=17;
+  A->map[19]->adjacent[1]=18;
+  A->map[19]->adjacent[2]=27;
+  A->map[19]->adjacent[3]=22;
+  A->map[19]->adjacent[4]=-1;
 
-  A->map[20]->x=-400;
-  A->map[20]->y=1250;
-  A->map[20]->adjacent[0]=16;
-  A->map[20]->adjacent[1]=17;
-  A->map[20]->adjacent[2]=21;
-  A->map[20]->adjacent[3]=-1;
+  A->map[20]->x=0;
+  A->map[20]->y=666;
+  A->map[20]->adjacent[0]=18;
+  A->map[20]->adjacent[1]=19;
+  A->map[20]->adjacent[2]=22;
+  A->map[20]->adjacent[3]=23;
+  A->map[20]->adjacent[4]=16;
 
-  A->map[21]->x=0;
-  A->map[21]->y=1200;
-  A->map[21]->adjacent[0]=20;
-  A->map[21]->adjacent[1]=22;
-  A->map[21]->adjacent[2]=17;
-  A->map[21]->adjacent[3]=19;
+  A->map[21]->x=800;
+  A->map[21]->y=550;
+  A->map[21]->adjacent[0]=24;
+  A->map[21]->adjacent[1]=29;
+  A->map[21]->adjacent[2]=-1;
+  A->map[21]->adjacent[3]=-1;
+  A->map[21]->adjacent[4]=-1;
 
-  A->map[22]->x=800;
-  A->map[22]->y=1300;
-  A->map[22]->adjacent[0]=21;
-  A->map[22]->adjacent[1]=19;
-  A->map[22]->adjacent[2]=14;
-  A->map[22]->adjacent[3]=-1;
+  A->map[22]->x=-200;
+  A->map[22]->y=855;
+  A->map[22]->adjacent[0]=19;
+  A->map[22]->adjacent[1]=20;
+  A->map[22]->adjacent[2]=27;
+  A->map[22]->adjacent[3]=28;
+  A->map[22]->adjacent[4]=23;
 
-  A->map[23]->x=-850;
-  A->map[23]->y=-1400;
-  A->map[23]->adjacent[0]=3;
-  A->map[23]->adjacent[1]=-1;
-  A->map[23]->adjacent[2]=-1;
-  A->map[23]->adjacent[3]=-1;
+  A->map[23]->x=133;
+  A->map[23]->y=855;
+  A->map[23]->adjacent[0]=20;
+  A->map[23]->adjacent[1]=29;
+  A->map[23]->adjacent[2]=24;
+  A->map[23]->adjacent[3]=28;
+  A->map[23]->adjacent[4]=22;
 
-  A->map[24]->x=-850;
-  A->map[24]->y=-1150;
-  A->map[24]->adjacent[0]=3;
-  A->map[24]->adjacent[1]=-1;
-  A->map[24]->adjacent[2]=-1;
-  A->map[24]->adjacent[3]=-1;
+  A->map[24]->x=530;
+  A->map[24]->y=855;
+  A->map[24]->adjacent[0]=21;
+  A->map[24]->adjacent[1]=29;
+  A->map[24]->adjacent[2]=28;
+  A->map[24]->adjacent[3]=23;
+  A->map[24]->adjacent[4]=-1;
 
   A->map[25]->x=-850;
-  A->map[25]->y=1400;
-  A->map[25]->adjacent[0]=15;
+  A->map[25]->y=1150;
+  A->map[25]->adjacent[0]=17;
   A->map[25]->adjacent[1]=-1;
   A->map[25]->adjacent[2]=-1;
   A->map[25]->adjacent[3]=-1;
+  A->map[25]->adjacent[4]=-1;
 
   A->map[26]->x=-850;
-  A->map[26]->y=1150;
-  A->map[26]->adjacent[0]=15;
+  A->map[26]->y=1400;
+  A->map[26]->adjacent[0]=17;
   A->map[26]->adjacent[1]=-1;
   A->map[26]->adjacent[2]=-1;
   A->map[26]->adjacent[3]=-1;
+  A->map[26]->adjacent[4]=-1;
 
+  A->map[27]->x=-400;
+  A->map[27]->y=1250;
+  A->map[27]->adjacent[0]=19;
+  A->map[27]->adjacent[1]=22;
+  A->map[27]->adjacent[2]=28;
+  A->map[27]->adjacent[3]=-1;
+  A->map[27]->adjacent[4]=-1;
+
+  A->map[28]->x=0;
+  A->map[28]->y=1200;
+  A->map[28]->adjacent[0]=22;
+  A->map[28]->adjacent[1]=23;
+  A->map[28]->adjacent[2]=24;
+  A->map[28]->adjacent[3]=27;
+  A->map[28]->adjacent[4]=29;
+
+  A->map[29]->x=800;
+  A->map[29]->y=1300;
+  A->map[29]->adjacent[0]=28;
+  A->map[29]->adjacent[1]=23;
+  A->map[29]->adjacent[2]=21;
+  A->map[29]->adjacent[3]=-1;
+  A->map[29]->adjacent[4]=-1;
 }
 /**********************************
 ***********************************
@@ -708,7 +761,11 @@ void Create_path(Astar *A, int indexStartNode, int indexTargetNode)
   A->path=temp;
   printf("FINAL Path \n");
   printArray(A->path,A->length_path);
-  //free(temp);
+}
+
+void RefreshPath(Astar *A)
+{
+  A->path= (int*)calloc(A->length_path,sizeof(int)); // Malloc le path de la structure
 }
 
 /* This function computes the length of the path generated
@@ -942,7 +999,7 @@ int FindNearestNode(Astar *A,double xTarget,double yTarget)
     }
 
   }
-
+  printf(RED "Exit FindNearestNode\n" RESET);
   return index_nearest_node;
 }
 
@@ -1006,4 +1063,4 @@ void Astar_free(Astar *A)
 
 
 
-//NAMESPACE_CLOSE();
+NAMESPACE_CLOSE();

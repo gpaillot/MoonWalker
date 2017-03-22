@@ -35,6 +35,7 @@
 #include <pthread.h>
 #include <time.h>
 #include "Electrovannes.h"
+#include "Odometer.h"
 using namespace std;
 
 /*
@@ -80,6 +81,8 @@ int main(int argc, char** argv) {
     MyMotors motorsright(MyCAN, nano, 0x708,1);
     MyMotors motorsleft(MyCAN, nano, 0x708,2);
     
+    MyOdometers odoright(nano,1);
+    
     MyVannes electrovannes(MyCAN,0x408);
     nano->reset();
     
@@ -93,7 +96,7 @@ int main(int argc, char** argv) {
     In->r_wheel_speed = 0.0;
     In->l_wheel_speed = 0.0;
     
-    
+    double xsiR[2];
     
     MyStruct = init_CtrlStruct(In,Out);
     atab->motorR = motorsright;
@@ -111,21 +114,23 @@ int main(int argc, char** argv) {
     {
         printf("failed in thread for right motor creation\n");
     }
-    double *KpKi = Kp_Ki_Computation(0.04,0.01);
+    double *KpKi = Kp_Ki_Computation(0.01,0.01);
     printf("Kp = %f \n", KpKi[0]);
     printf("Ki = %f \n", KpKi[1]);
     MiddleLevelController(0.3,0.0,MyStruct->struct_control->Speed_ref);
     double duration;
     clock_t start,end;
-    /*while(1)
+    while(1)
      { 
      start = clock(); 
      LowLevelController(MyStruct,MyStruct->struct_control->Speed_ref,1*KpKi[0],1*KpKi[1],MyStruct->struct_control->command);
      motorsright.setSpeed(MyStruct->struct_control->command[0]);
-     motorsleft.setSpeed(0);
+     //printf("%f \n",MyStruct->struct_control->command[0]);
+     motorsleft.setSpeed(MyStruct->struct_control->command[1]);
      //printf("Speed ref right : %f\n",MyStruct->struct_control->Speed_ref[0]);
-     
-     //xsiR = xsiRWheels(MyStruct);
+     //odoright.getOdometersPosition();
+     xsiR = xsiRWheels(MyStruct);
+     computePosition(MyStruct,xsiR);
      //displayWheels(MyStruct);
      //printf("wheel_ref_gauche: %f \n",wheel_ref[1]);
      //printf("wheel_ref_droite: %f \n",wheel_ref[0]);
@@ -136,13 +141,13 @@ int main(int argc, char** argv) {
      
      
      
-     }*/
+     }
     
     
     int speedLeft = 0;
     int speedRight = 10;
     
-    while(1)
+    /*while(1)
     {
      electrovannes.setLed(true);
     time_sleep(2);
@@ -168,7 +173,7 @@ int main(int argc, char** argv) {
   
     printf("SetVannes============================== \n");
     electrovannes.setVanne(4);
-    time_sleep(2.98);
+    time_sleep(2.98);*/
   
 
 

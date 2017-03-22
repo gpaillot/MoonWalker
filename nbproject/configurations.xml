@@ -4,9 +4,12 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>Astar_gr1.hpp</itemPath>
+      <itemPath>Astar_struct_gr1.h</itemPath>
       <itemPath>Controllers_gr1.hpp</itemPath>
       <itemPath>CtrlStruct_gr1.h</itemPath>
       <itemPath>Electrovannes.h</itemPath>
+      <itemPath>FSM_gr1.hpp</itemPath>
       <itemPath>GPIOClass.h</itemPath>
       <itemPath>Motors.h</itemPath>
       <itemPath>MyDE0Nano.h</itemPath>
@@ -14,6 +17,7 @@
       <itemPath>MyMCP2515.h</itemPath>
       <itemPath>Odometer.h</itemPath>
       <itemPath>Odometry_gr1.hpp</itemPath>
+      <itemPath>UsefulFunctions_gr1.hpp</itemPath>
       <itemPath>ctrl_io.h</itemPath>
       <itemPath>globals.h</itemPath>
       <itemPath>initTourelle.h</itemPath>
@@ -71,6 +75,10 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="Astar_gr1.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Astar_struct_gr1.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Controllers_gr1.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Controllers_gr1.hpp" ex="false" tool="3" flavor2="0">
@@ -82,6 +90,8 @@
       <item path="Electrovannes.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Electrovannes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FSM_gr1.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="GPIOClass.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -108,6 +118,8 @@
       <item path="Odometry_gr1.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Odometry_gr1.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="UsefulFunctions_gr1.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ctrl_io.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -150,6 +162,10 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="Astar_gr1.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Astar_struct_gr1.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Controllers_gr1.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Controllers_gr1.hpp" ex="false" tool="3" flavor2="0">
@@ -161,6 +177,8 @@
       <item path="Electrovannes.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Electrovannes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="FSM_gr1.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="GPIOClass.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -187,6 +205,8 @@
       <item path="Odometry_gr1.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Odometry_gr1.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="UsefulFunctions_gr1.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ctrl_io.h" ex="false" tool="3" flavor2="0">
       </item>

@@ -53,8 +53,8 @@ void StructControl_init(CtrlStruct *cvs) // Initialiser la structure controle
   cvs->struct_control->command[0] = 0.0;
   cvs->struct_control->command[1] = 0.0;
 
-  cvs->struct_control->Kt = 0.0;         // should not change
-  cvs->struct_control->Tsample = 0.040;   // sampling period (1ms)
+  cvs->struct_control->Kt = 1.0;         // should not change
+  cvs->struct_control->Tsample = 0.050;   // sampling period (1ms)
 }
 
 void displayControllers(CtrlStruct *cvs)
@@ -287,13 +287,13 @@ void LowLevelController(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki
 double Limiter(double input)
 {
     double output;
-    if(input >100)
+    if(input >120)
     {
-        output = 100;
+        output = 120;
     }
-    else if(input < -100)
+    else if(input < -120)
     {
-        output = -100;
+        output = -120;
     }
     else
     {

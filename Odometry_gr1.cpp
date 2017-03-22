@@ -75,7 +75,7 @@ void computePosition(CtrlStruct *cvs,double *xsiRpoint)
     double v = xsiRpoint[0];
     double w = xsiRpoint[2];
 
-    double delta_t = 0.001;
+    double delta_t = 0.04;
 
     double theta = w*delta_t + cvs->struct_odometry->theta_t;
     if(theta>PI)
