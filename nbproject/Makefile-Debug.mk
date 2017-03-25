@@ -35,7 +35,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/Astar_gr1.o \
 	${OBJECTDIR}/Controllers_gr1.o \
 	${OBJECTDIR}/CtrlStruct_gr1.o \
 	${OBJECTDIR}/Electrovannes.o \
@@ -75,11 +74,6 @@ LDLIBSOPTIONS=-lwiringPi -lpigpio -lpthread
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/moonwalker: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/moonwalker ${OBJECTFILES} ${LDLIBSOPTIONS}
-
-${OBJECTDIR}/Astar_gr1.o: Astar_gr1.cpp
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Astar_gr1.o Astar_gr1.cpp
 
 ${OBJECTDIR}/Controllers_gr1.o: Controllers_gr1.cpp
 	${MKDIR} -p ${OBJECTDIR}

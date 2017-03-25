@@ -9,25 +9,18 @@
 #include "ctrl_io.h"
 //#include "namespace_ctrl.h"
 #include <stdlib.h>
-#include "Astar_struct_gr1.h"
+//#include "Astar_struct_gr1.h"
 
-NAMESPACE_INIT(ctrlGr1);
+//NAMESPACE_INIT(ctrlGr1);
 
-enum RobotState
-{
-    BEGINNING,
-    GENERATE_PATH,
-    SET_OBJECTIVE,
-    FOLLOW_PATH,
-    GO_BACK_BASIS
-};
+
 
 typedef struct StructTower
 {
     int counter;///< simple variable
     int counterDist;
-    double tabDistance[10];
-    double tabFixed[3]; ///< 1D tabular of double
+    double *tabDistance;
+    double *tabFixed; ///< 1D tabular of double
     double dist;
     double previousDistance;
     int previous_rising_index;
@@ -38,12 +31,11 @@ typedef struct StructTower
 typedef struct StructOdometry
 {
     int counter;///< simple variable
-    double prev_distance[2];
-    double prev_speed[2]; ///< 1D tabular of double for previous speed of both wheels
+    double *prev_distance;
+    double *prev_speed; ///< 1D tabular of double for previous speed of both wheels
     double x_t;
     double y_t;
     double theta_t;
-    bool moonwalker;
 
 } StructWheels;
 
@@ -61,6 +53,7 @@ typedef struct StructControl
   double errAngle;
   int counterNode;
   double command[2];
+  double Speed_ref[2];
   double Kt;          // Anti-windup constant
   double Tsample;     // sampling period
 
@@ -70,26 +63,12 @@ typedef struct StructControl
 
 typedef struct StructPathPlanning
 {
-  Astar *astar;
+  //Astar *astar;
 } StructPathPlanning;
-
-
-typedef struct Target
-{
-  double x;
-  double y;
-  bool isTaken;
-  int indexTarget;
-  int score;
-} Target;
-
 
 typedef struct StructFSM
 {
-  RobotState robot_state;
-  Target **TargetArray;
-  bool isGenerated;
-  int indexNextTarget;
+  double test;
 } StructFSM;
 
 

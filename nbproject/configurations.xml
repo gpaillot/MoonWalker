@@ -31,7 +31,6 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>Astar_gr1.cpp</itemPath>
       <itemPath>Controllers_gr1.cpp</itemPath>
       <itemPath>CtrlStruct_gr1.cc</itemPath>
       <itemPath>Electrovannes.cpp</itemPath>
@@ -76,8 +75,6 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
-      <item path="Astar_gr1.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="Astar_gr1.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Astar_struct_gr1.h" ex="false" tool="3" flavor2="0">
@@ -165,8 +162,6 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="Astar_gr1.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="Astar_gr1.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Astar_struct_gr1.h" ex="false" tool="3" flavor2="0">
