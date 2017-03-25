@@ -36,6 +36,7 @@
 #include <time.h>
 #include "Electrovannes.h"
 #include "Odometer.h"
+#include "MyIncludes_gr1.h"
 using namespace std;
 
 /*
@@ -120,7 +121,7 @@ int main(int argc, char** argv) {
     MiddleLevelController(0.3,0.0,MyStruct->struct_control->Speed_ref);
     double duration;
     clock_t start,end;
-    while(1)
+    while(MyStruct->)
      { 
      start = clock(); 
      LowLevelController(MyStruct,MyStruct->struct_control->Speed_ref,1*KpKi[0],1*KpKi[1],MyStruct->struct_control->command);

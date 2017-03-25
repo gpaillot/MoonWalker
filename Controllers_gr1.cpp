@@ -8,7 +8,21 @@
 
 
 #include "MyIncludes_gr1.h"
-
+/*#include "ctrl_main_gr1.h"
+#include "namespace_ctrl.h"*/
+#include "Astar_gr1.hpp"
+#include "Astar_struct_gr1.h"
+#include "CtrlStruct_gr1.h"
+#include <math.h>
+#include <stdlib.h>
+//#include "user_realtime.h"
+#include "UsefulFunctions_gr1.hpp"
+//#include "Obstacles_gr1.hpp"
+#include "Controllers_gr1.hpp"
+#include "FSM_gr1.hpp"
+//#include "Keyboard_gr1.hpp"
+#include "Odometry_gr1.hpp"
+//#include "Tower_gr1.hpp"
 
 #define PI 3.141592653
 #define CARRE(X) (X)*(X)
@@ -19,6 +33,7 @@
 #define RESET "\x1B[0m"
 #define MAG   "\x1B[35m"
 #define CYN   "\x1B[36m"
+#define DIST_MIN 50
 //NAMESPACE_INIT(ctrlGr1); // where X should be replaced by your group number
 
 /* This function initializes the StructControl structure
@@ -28,7 +43,6 @@
 
 void StructControl_init(CtrlStruct *cvs) // Initialiser la structure controle
 {
-  //cvs->struct_control->sum_error = (double *) malloc(2*sizeof(double));
   cvs->struct_control->Kp = 0.0; //to be computed !!!!!
   cvs->struct_control->Ki = 0.0; //to be computed !!!!!
   cvs->struct_control->sum_error[0] = 0.0; // right wheel
@@ -44,9 +58,7 @@ void StructControl_init(CtrlStruct *cvs) // Initialiser la structure controle
   cvs->struct_control->previousCommandLtd[0] = 0.0;
   cvs->struct_control->previousCommandLtd[1] = 0.0;
 
-  cvs->struct_control->Speed_ref[0] = 0.0;
-  cvs->struct_control->Speed_ref[1] = 0.0;
-  
+
   cvs->struct_control->errDist = 1000; //to be computed !!!!!
   cvs->struct_control->errAngle = 1000; //to be computed !!!!!
   cvs->struct_control->counterNode=0;
@@ -54,32 +66,31 @@ void StructControl_init(CtrlStruct *cvs) // Initialiser la structure controle
   cvs->struct_control->command[1] = 0.0;
 
   cvs->struct_control->Kt = 1.0;         // should not change
-  cvs->struct_control->Tsample = 0.050;   // sampling period (1ms)
+  cvs->struct_control->Tsample = 0.04;   // sampling period (1ms)
+
+  printf(RED "StructControl Initialized! \n" RESET);
+
 }
 
 void displayControllers(CtrlStruct *cvs)
 {
-    printf("Controllers!\n");
+  //  printf("Controllers!\n");
 }
 
 
 void Position_controller(double errDist, double errAngle,double KpDist, double KpAngle, double *command)
 {
-  // memory allocation for the return value
-  //double *command;
-  //command= (double *)calloc(2,sizeof(double));
   command[0]=KpDist*errDist; // v
   command[1]=KpAngle*errAngle; // w
-  //return command;
 }
 
 
-/*void FromHighToMiddleLevel(CtrlStruct *cvs,double *command)
+void FromHighToMiddleLevel(CtrlStruct *cvs,double *command)
 {
-  printf("Entering From High to middle level\n");
-  // Commande = ce qu'on retourne = [v,w]
-  //double *command; // v,w
-  //command= (double *)calloc(2,sizeof(double));
+//  printf(GRN "Entering the FromHighToMiddleLevel\n" RESET);
+  //printArray(cvs->struct_path_planning->astar->path,cvs->struct_path_planning->astar->length_path);
+//  printf(CYN "Printed the array\n" RESET);
+
   Astar *A = cvs->struct_path_planning->astar;
   double errDist;
   double errAngle;
@@ -97,7 +108,7 @@ void Position_controller(double errDist, double errAngle,double KpDist, double K
     length_path=A->length_path_only_turns;
   }
 
-
+  printArray(A->path,A->length_path);
   if(counterNode<length_path)
   {
     printf(RED "CounterNode: %d \n" RESET,counterNode);
@@ -108,21 +119,21 @@ void Position_controller(double errDist, double errAngle,double KpDist, double K
 
     printf(RED "Position x: %f \n" RESET,position_x);
     printf(RED "Position y: %f \n" RESET,position_y);
+    printf(RED "THETA : %f \n" RESET,(cvs->struct_odometry->theta_t)*180/3.14);
 
     double theta=cvs->struct_odometry->theta_t;
 
     Node *nextNode;
     Node *nextNextNode;
-    printArray(path,A->length_path_only_turns);
-    nextNode=A->map[path[counterNode]];
-    printf(CYN "NextNode index: %d \n" RESET,A->map[path[counterNode]]->index);
-    printf(CYN "NextNode coordinates: %f,%f \n" RESET,A->map[path[counterNode]]->x,A->map[path[counterNode]]->y);
 
-    // Position du prochain noeud
+    nextNode=A->map[path[counterNode]];
     double nextPosition_x= nextNode ->x;
     double nextPosition_y= nextNode ->y;
-    printf(RED "nextposition x: %f \n" RESET,nextPosition_x);
-    printf(RED "nextposition y: %f \n" RESET,nextPosition_y);
+
+
+    printf(CYN "NextNode index: %d \n" RESET,A->map[path[counterNode]]->index);
+    printf(CYN "Next node position x: %f \n" RESET,nextPosition_x);
+    printf(CYN "Next node position y: %f \n" RESET,nextPosition_y);
 
     // Position du prochain prochain noeud
 
@@ -133,21 +144,16 @@ void Position_controller(double errDist, double errAngle,double KpDist, double K
     double diffy= nextPosition_y-position_y;
 
     errDist = EuclidianDistance(nextPosition_x,nextPosition_y,position_x,position_y);
-    printf(BLU "Error distance : %f \n" RESET ,errDist );
 
-    printf(GRN "Robot orientation : %f \n" RESET ,(cvs->struct_odometry->theta_t)*180/3.14 );
 
     errAngle = atan2(diffy,diffx)-cvs->struct_odometry->theta_t;
-    printf(GRN "Atan2 : %f \n" RESET ,(errAngle+ cvs->struct_odometry->theta_t)*180/3.14);
 
-    printf(GRN "Error angle : %f \n" RESET ,(errAngle)*180/3.14 );
-
+    printf(BLU "Error distance : %f \n" RESET ,errDist );
+    printf(BLU "Error angle : %f \n" RESET ,(errAngle)*180/3.14 );
 
     if(errDist>100.0)
     {
-      Position_controller(errDist,errAngle,0.5, 10,command);
-      printf(RED"Error distance bigger than 15 \n" RESET);
-
+      Position_controller(errDist,errAngle,0.5, 2,command);
     }
 
     else
@@ -162,8 +168,7 @@ void Position_controller(double errDist, double errAngle,double KpDist, double K
     command[0]=0;
     command[1]=0;
   }
-  //return command;
-}*/
+}
 
 
 /* This function computes the command to apply with a reference speed to follow
@@ -173,13 +178,6 @@ void Position_controller(double errDist, double errAngle,double KpDist, double K
  */
 void PI_controller(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki, double*command)
 {
-    // memory allocation for the return value
-
-    //command= (double *)calloc(2,sizeof(double));
-
-    // calling for control structure => Ki, Kp, sum_error
-
-
     // current speed
     double curr_speed_right = cvs->inputs->r_wheel_speed;
     double curr_speed_left = cvs->inputs->l_wheel_speed;
@@ -217,25 +215,20 @@ void PI_controller(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki, dou
 
 void LowLevelController(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki, double *command)
 {
-    //printf("Entering Low Level controller\n");
+  double distance_opp;
+  distance_opp=distance_opponent(cvs);
+  //if(distance_opp>DIST_MIN) // Distance ennemi
+  //{
     double u_left_prime, u_right_prime, kphi, K;
     kphi=26.1e-3;
     K =1;
 
-    //double *pi_contr;
-    //pi_contr= (double*)calloc(2,sizeof(double));
-
-    //double *u= (double*)calloc(2,sizeof(double));
-
     PI_controller(cvs,ref_speed,Kp,Ki,command); // Vient mettr dans commande la sortie du PI
-    //printf("Low Level controller command 0: %f\n",command[0]);
-    //printf("Low Level controller command 1: %f\n",command[1]);
 
     // limiter stage
     u_right_prime = Limiter(command[0]); // Vient
     u_left_prime = Limiter(command[1]);
-    //printf("Low Level controller limiter 0: %f\n",command[0]);
-    //printf("Low Level controller limiter 1: %f\n",command[1]);
+
     // Back EMF compenstation stages
     u_right_prime  = u_right_prime + (kphi/K)*(cvs->inputs->r_wheel_speed);
     u_left_prime = u_left_prime + (kphi/K)*(cvs->inputs->l_wheel_speed);
@@ -247,11 +240,13 @@ void LowLevelController(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki
     // variable assignation
     command[0] = u_right_prime; // Vient mettre dans commande les voltages
     command[1] = u_left_prime;
-
-    //printf("Final Low level 0: %f\n",command[0]);
-    //printf("Final Low level 1: %f\n",command[1]);
-    //free(pi_contr);
-    //return u;
+  //}
+/*  else
+  {
+    command[0] = 0; // Vient mettre dans commande les voltages
+    command[1] = 0;
+  }
+  */
 }
 
 
@@ -260,22 +255,16 @@ void LowLevelController(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki
  * param[in] : cvs controller main structure, table with speeds of the wheels
  * out : [xr,yr]
  */
- void MiddleLevelController(double vref,double wref,double *Speed_ref)
+ void MiddleLevelController(double vref,double wref,double *command)
 {
     double l = 0.1125; // In meters!
     double r = 0.03;
 
-  //  double *speeds;
-  //  speeds= (double *)malloc(sizeof(double)* 2);
-
-
     double right_speed = (vref+l*wref)/r;
     double left_speed = (vref-l*wref)/r;
 
-    Speed_ref[0] = right_speed;
-    Speed_ref[1] = left_speed;
-
-    //return speeds;
+    command[0] = right_speed;
+    command[1] = left_speed;
 }
 
 /*
@@ -287,20 +276,19 @@ void LowLevelController(CtrlStruct *cvs, double *ref_speed, double Kp, double Ki
 double Limiter(double input)
 {
     double output;
-    if(input >120)
+    if(input >100)
     {
-        output = 120;
+        output = 100;
     }
-    else if(input < -120)
+    else if(input < -100)
     {
-        output = -120;
+        output = -100;
     }
     else
     {
         output = input;
     }
     return output;
-
 }
 
 /* computation of Kp and Ki for the low_level controller
@@ -335,9 +323,41 @@ double *Kp_Ki_Computation(double overshoot, double time_response)
 *
 *
 */
+void PI_controller_with_antiwindup(double *ref_speed, CtrlStruct *cvs, double Kp, double Ki, double Kt,double *command)
+{
+
+
+  double sum_error_right = cvs->struct_control->sum_error[0];
+  double sum_error_left = cvs->struct_control->sum_error[1];
+
+  // current speed
+  double curr_speed_right = cvs->inputs->r_wheel_speed;
+  double curr_speed_left = cvs->inputs->l_wheel_speed;
+
+  //
+  double delta_t = 0.001;
+  double command_right, command_left;
+  double curr_error_right = ref_speed[0] - curr_speed_right; // speed error right wheel definition
+  double curr_error_left = ref_speed[1] - curr_speed_left; // speed error left wheeldefinition
+
+  sum_error_right += curr_error_right;
+  sum_error_left += curr_error_left;
+
+  cvs->struct_control->sum_error[0] = sum_error_right;
+  cvs->struct_control->sum_error[1] = sum_error_left;
+
+  command_right = Kp*curr_error_right + Ki*sum_error_right*delta_t;
+  command_left = Kp*curr_error_left + Ki*sum_error_left*delta_t;
+
+  command[0] = command_right;
+  command[1] = command_left;
+
+
+}
 
 void StructControl_free(CtrlStruct *cvs)
 {
   free(cvs->struct_control->sum_error);
 }
 
+//NAMESPACE_CLOSE();

@@ -2,14 +2,29 @@
 
 
 #include "CtrlStruct_gr1.h"
-//#include "namespace_ctrl.h"
-/*#include "Tower_gr1.hpp"
-#include "Odometry_gr1.hpp"*/
+#include "namespace_ctrl.h"
+#include "Tower_gr1.hpp"
+#include "Odometry_gr1.hpp"
 #include "Controllers_gr1.hpp"
-/*#include "Pathplanning_gr1.hpp"
+#include "Pathplanning_gr1.hpp"
 #include "Astar_gr1.hpp"
-#include "FSM_gr1.hpp"*/
-
+#include "FSM_gr1.hpp"
+/*#include "ctrl_main_gr1.h"
+#include "namespace_ctrl.h"*/
+#include "Astar_gr1.hpp"
+#include "Astar_struct_gr1.h"
+#include "CtrlStruct_gr1.h"
+#include <math.h>
+#include <stdlib.h>
+//#include "user_realtime.h"
+#include "UsefulFunctions_gr1.hpp"
+//#include "Obstacles_gr1.hpp"
+#include "Controllers_gr1.hpp"
+#include "FSM_gr1.hpp"
+//#include "Keyboard_gr1.hpp"
+#include "Odometry_gr1.hpp"
+//#include "Tower_gr1.hpp"
+//NAMESPACE_INIT(ctrlGr1);
 
 /*! \brief initialize the controller structure
  *
@@ -36,17 +51,18 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
 
 	cvs->inputs  = inputs;
 	cvs->outputs = outputs;
+	cvs->py_outputs = py_outputs;
 
     ////// Here, we can implement new structures! Do not forget to add their definition in CtrlStruct_gr1.h! Here, only the initialization //////
 
 
 // To initialize all the structures
 
-//  StructTower_init(cvs);
-  //StructPathPlanning_init(cvs);
+  StructTower_init(cvs);
+  StructPathPlanning_init(cvs);
   StructControl_init(cvs);
-  //StructOdometry_init(cvs);
-  //StructFSM_init(cvs);
+  StructOdometry_init(cvs);
+  StructFSM_init(cvs);
 
 
 
@@ -77,10 +93,16 @@ CtrlStruct* init_CtrlStruct(CtrlIn *inputs, CtrlOut *outputs)
      free(cvs->struct_control);
 
      //structure path planning
-//     Astar_free(cvs->struct_path_planning->astar);
+     Astar_free(cvs->struct_path_planning->astar);
      free(cvs->struct_path_planning);
 
+     StructFSM_free(cvs);
+
+     free(cvs->struct_fsm);
 
      free(cvs);
 
  }
+
+
+//NAMESPACE_CLOSE();

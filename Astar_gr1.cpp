@@ -17,7 +17,7 @@
 #define NBR_NODES 30
 #define NBR_ADJ 5 // 5 if Harcode, else 8
 
-NAMESPACE_INIT(ctrlGr1);
+//NAMESPACE_INIT(ctrlGr1);
 
 /**********************************
 ***********************************
@@ -1063,4 +1063,3 @@ void Astar_free(Astar *A)
 
 
 
-NAMESPACE_CLOSE();

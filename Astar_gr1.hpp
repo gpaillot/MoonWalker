@@ -8,10 +8,11 @@
 #include <stdio.h>
 #ifndef Astar_gr1_hpp
 #define Astar_gr1_hpp
-#include "namespace_ctrl.h"
+#include "MyIncludes_gr1.h"
+//#include "namespace_ctrl.h"
 
 
-NAMESPACE_INIT(ctrlGr1); // where X should be replaced by your group number
+//NAMESPACE_INIT(ctrlGr1); // where X should be replaced by your group number
 
 void Astar_init(CtrlStruct *cvs); // Pour initialiser le Astar
 void Astar_free(Astar *A);
@@ -41,5 +42,5 @@ double slopeBetweenNodes(Astar *A,int indexNode1, int indexNode2);
 
 
 
-NAMESPACE_CLOSE();
+//NAMESPACE_CLOSE();
 #endif /* Astar_gr1_hpp */
