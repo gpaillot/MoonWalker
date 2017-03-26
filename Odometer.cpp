@@ -37,7 +37,7 @@ MyOdometers::MyOdometers( MyDE0Nano *nano, int side)
     this_side = side;// 1 for the right motor, 2 for the left motor
     
 }
-MyOdometers::~MyOdometers() // destructeur de la classe odometer 
+MyOdometers::~MyOdometers() 
 {
     
 }

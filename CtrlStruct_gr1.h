@@ -31,14 +31,13 @@ typedef struct StructTower
 typedef struct StructOdometry
 {
     int counter;///< simple variable
-    double prev_distance[2];
-    double prev_speed[2]; ///< 1D tabular of double for previous speed of both wheels
+    double *prev_distance;
+    double *prev_speed; ///< 1D tabular of double for previous speed of both wheels
     double x_t;
     double y_t;
     double theta_t;
-    double xsiRpoint[3];
 
-} StructOdometry;
+} StructWheels;
 
 // Controller structure
 typedef struct StructControl

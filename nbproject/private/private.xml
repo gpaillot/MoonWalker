@@ -7,16 +7,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/Odometry_gr1.cpp</file>
+            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/Controllers_gr1.cpp</file>
             <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/main.cpp</file>
-            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/Odometer.cpp</file>
-            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/ctrl_io.h</file>
-            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/CtrlStruct_gr1.cc</file>
-            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/Motors.h</file>
             <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/Motors.cpp</file>
-            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/CtrlStruct_gr1.h</file>
-            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/Odometry_gr1.hpp</file>
-            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/Astar_struct_gr1.h</file>
+            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/Electrovannes.cpp</file>
+            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/Electrovannes.h</file>
+            <file>file:/C:/Users/matthieu/Documents/GitHub/MoonWalker/MyMCP2515.cpp</file>
         </group>
     </open-files>
 </project-private>

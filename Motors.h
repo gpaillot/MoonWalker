@@ -35,15 +35,13 @@
 
 class MyMotors{
 public: 
-    MyMotors(MyMCP2515 *myCan, MyDE0Nano *nano, int address, int motor); // constructeur de l'objet 
-    virtual ~MyMotors(); // destructeur de l'objet 
+    MyMotors(MyMCP2515 *myCan, MyDE0Nano *nano, int address, int motor);
+    virtual ~MyMotors();
     void setBrake(bool activate);
     void setLed(bool activate);
     void setSpeed(int speed);
     double getPosition();
     double getSpeed();
-    double getSpeedWithMean(int number_of_sample);
-    void initMotor(); 
 private:
     MyMCP2515 *this_can;
     MyDE0Nano *this_nano;
