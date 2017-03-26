@@ -20,7 +20,7 @@
 #include <ctime>
 #include <math.h>
 #include <sys/time.h>
-
+#include <time.h>
 #include "MyMCP2515.h"
 #include "MyDE0Nano.h"
 #include "tourelle.h"
@@ -39,9 +39,9 @@ MyMotors::MyMotors(MyMCP2515 *myCan, MyDE0Nano *nano, int address, int motor)
     this_motor = motor; // 1 for the right motor, 2 for the left motor
     
 }
-MyMotors::~MyMotors() //sait pas du tout a quoi ca sert...
+MyMotors::~MyMotors() 
 {
-    
+    // Rien à faire dans le destructeur... 
 }
 
 /*set the brake if activate is true, release them is it is false*/
@@ -85,7 +85,7 @@ void MyMotors::setSpeed(int speed){
     
     if(this_motor ==1)
     {
-    makeData(data,GPLAT+offset, mask_brake,0x00,0x00,true);// release brake
+    /*makeData(data,GPLAT+offset, mask_brake,0x00,0x00,true);// release brake
     this_can->doSendMsg(this_address,data,3,0x00);
     time_sleep(0.001);
     
@@ -95,7 +95,7 @@ void MyMotors::setSpeed(int speed){
     
     makeData(data,PR1+offset, 0xff, 0xff,0x00,true);//PR1
     this_can->doSendMsg(this_address,data, 3,0x00);
-    time_sleep(0.001);
+    time_sleep(0.001);*/
     
     makeData(data,PWM1+offset, 0xff,duty_zero + speed,0x00,true);//PWM1 set to speed
     this_can->doSendMsg(this_address,data, 3,0x00);
@@ -104,7 +104,7 @@ void MyMotors::setSpeed(int speed){
     else if (this_motor == 2)
     {
     speed = -speed; // For MoonWalker only 
-    makeData(data,GPLAT+offset, mask_brake2,0x00,0x00,true);// release brake
+    /*makeData(data,GPLAT+offset, mask_brake2,0x00,0x00,true);// release brake
     this_can->doSendMsg(this_address,data,3,0x00);
     time_sleep(0.001);
     
@@ -114,7 +114,7 @@ void MyMotors::setSpeed(int speed){
     
     makeData(data,PR2+offset, 0xff, 0xff,0x00,true);//PR1
     this_can->doSendMsg(this_address,data, 3,0x00);
-    time_sleep(0.001);
+    time_sleep(0.001);*/
     
     makeData(data,PWM2+offset, 0xff,duty_zero + speed,0x00,true);//PWM1 set to speed
     this_can->doSendMsg(this_address,data, 3,0x00);
@@ -188,3 +188,87 @@ double MyMotors::getSpeed() {
     
     return -(pos2-pos1)*2*PI/(0.01*nTicksTour); // minus sign for MW only 
 }
+
+double MyMotors::getSpeedWithMean(int number_of_sample) 
+{
+    printf("getSpeedWithMean \n");
+    double pos1, pos2;
+    long int time_start, time_end;
+    struct timeval  tv;
+    int address_of_SPI, i, speed;
+    double diff_pos = 0.0;
+    if(this_motor == 1)
+    {
+        address_of_SPI = 0x02;
+    }
+    else if(this_motor ==2)
+    {
+        address_of_SPI = 0x01;
+    }
+    else 
+    {
+        printf("This motor is not defined");
+        i = number_of_sample+1;
+    }
+
+    //unsigned char buf[4] = {0x00, 0x00, 0x00, 0x00};
+    char buf[4] = {0x00, 0x00, 0x00, 0x00};
+    
+    for(i=0;i<number_of_sample; i++)
+    {
+        
+        makeData(buf, 0x00, 0x00, 0x00, 0x00, false);
+        this_nano->readWriteReg(READ, address_of_SPI, (signed char*)buf, 4);
+        gettimeofday(&tv, NULL);
+        time_start =  (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000 ;// register read of PosEgdeTicks
+        speed = spi2data(buf); // converting char value into int value //minus sign for MW
+        pos1 = (double) speed; 
+
+        time_sleep(0.01);
+        
+        makeData(buf, 0x00, 0x00, 0x00, 0x00, false);
+        this_nano->readWriteReg(READ, address_of_SPI, (signed char*)buf, 4);
+        gettimeofday(&tv, NULL);
+        time_end =  (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000 ;// register read of PosEgdeTicks
+        speed = spi2data(buf); // converting char value into int value //minus sign for MW
+        pos2 = (double) speed; 
+        
+        diff_pos +=(pos2-pos1)*2*PI/((time_end-time_start)*nTicksTour);
+
+    }
+    return (diff_pos/number_of_sample); // minus sign for MW only 
+}
+
+void MyMotors::initMotor()
+{
+    
+    if(this_motor ==1)
+    {
+    makeData(data,GPLAT+offset, mask_brake,0x00,0x00,true);// release brake
+    this_can->doSendMsg(this_address,data,3,0x00);
+    time_sleep(0.001);
+    
+    makeData(data,T1CON+offset, 0xb3,0x80,0x00,true);//T1CON
+    this_can->doSendMsg(this_address,data, 3,0x00); 
+    time_sleep(0.001);
+    
+    makeData(data,PR1+offset, 0xff, 0xff,0x00,true);//PR1
+    this_can->doSendMsg(this_address,data, 3,0x00);
+    time_sleep(0.001);
+    }
+    else if (this_motor == 2)
+    {
+    makeData(data,GPLAT+offset, mask_brake2,0x00,0x00,true);// release brake
+    this_can->doSendMsg(this_address,data,3,0x00);
+    time_sleep(0.001);
+    
+    makeData(data,T2CON+offset, 0xb3,0x80,0x00,true);//T1CON
+   this_can->doSendMsg(this_address,data, 3,0x00); 
+    time_sleep(0.001);
+    
+    makeData(data,PR2+offset, 0xff, 0xff,0x00,true);//PR1
+    this_can->doSendMsg(this_address,data, 3,0x00);
+    time_sleep(0.001);
+    
+    }
+}  
