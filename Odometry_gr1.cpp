@@ -7,7 +7,7 @@
 //
 
 #include "MyIncludes_gr1.h"
-
+#include <math.h>
 
 #define PI 3.1415926535897932384626
 
@@ -22,8 +22,6 @@ void StructOdometry_init(CtrlStruct *cvs)
 {
   //////////////////////   Structure Wheels //////////////////////
 
-  cvs->struct_odometry->prev_distance = (double*) malloc(2*sizeof(double));
-  cvs->struct_odometry->prev_speed = (double*) malloc(2*sizeof(double));
   cvs->struct_odometry->counter = 0;
   cvs->struct_odometry->x_t = -850;
   cvs->struct_odometry->y_t = -1150;
@@ -32,6 +30,9 @@ void StructOdometry_init(CtrlStruct *cvs)
   cvs->struct_odometry->prev_speed[1] = 0.0;
   cvs->struct_odometry->prev_speed[0] = 0.0;
   cvs->struct_odometry->prev_speed[1] = 0.0;
+  cvs->struct_odometry->xsiRpoint[0] = 0.0;
+  cvs->struct_odometry->xsiRpoint[1] = 0.0;
+  cvs->struct_odometry->xsiRpoint[2] = 0.0;
 
 }
 
@@ -42,25 +43,17 @@ void StructOdometry_init(CtrlStruct *cvs)
  * param[in] : cvs controller main structure
  * out : [x_dot,y_dot,theta_dot]
  */
-double *xsiRWheels(CtrlStruct *cvs)
+void xsiRWheels(CtrlStruct *cvs, int unit) // 1 = mm & 0 = meter
 {
-    double *xsiRpoint;
-    xsiRpoint = (double *)malloc(sizeof(double)* 3);
-
     double radius = 0.03;
-    double l = 0.1125;
-
+    double l = 0.1500; // to be modified 
     // phi_1 = roue droite, phi_2 = roue gauche
-    xsiRpoint[0] = (radius*cvs->inputs->r_wheel_speed)*0.5 + (radius*cvs->inputs->l_wheel_speed)*0.5;
-    xsiRpoint[1] = 0;
-    xsiRpoint[2] = (radius*cvs->inputs->r_wheel_speed)/(2*l) - (radius*cvs->inputs->l_wheel_speed)/(2*l);
-
-
-    xsiRpoint[0]=xsiRpoint[0]*1000;
-    xsiRpoint[1]=xsiRpoint[1]*1000;
-    xsiRpoint[2]=xsiRpoint[2];
-
-    return xsiRpoint;
+    cvs->struct_odometry->xsiRpoint[0] = (radius*cvs->inputs->r_wheel_speed)*0.5 + (radius*cvs->inputs->l_wheel_speed)*0.5;
+    cvs->struct_odometry->xsiRpoint[2] = (radius*cvs->inputs->r_wheel_speed)/(2*l) - (radius*cvs->inputs->l_wheel_speed)/(2*l);
+    if (unit ==1)
+    {
+      cvs->struct_odometry->xsiRpoint[0] = cvs->struct_odometry->xsiRpoint[0]*1000;  
+    }
 }
 
 
@@ -69,11 +62,11 @@ double *xsiRWheels(CtrlStruct *cvs)
  * param[in] : cvs controller main structure, table with speeds of the wheels
  * out : [xr,yr]
  */
-void computePosition(CtrlStruct *cvs,double *xsiRpoint)
+void computePosition(CtrlStruct *cvs)
 {
 
-    double v = xsiRpoint[0];
-    double w = xsiRpoint[2];
+    double v = cvs->struct_odometry->xsiRpoint[0];
+    double w = cvs->struct_odometry->xsiRpoint[2];
 
     double delta_t = 0.04;
 

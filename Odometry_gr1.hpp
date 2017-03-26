@@ -6,16 +6,13 @@
 //
 //
 #include <stdio.h>
-
 #ifndef Odometry_gr1_hpp
 #define Odometry_gr1_hpp
-
 #include <stdio.h>
-//#include "namespace_ctrl.h"
-//NAMESPACE_INIT(ctrlGr1);
+
 void StructOdometry_init(CtrlStruct *cvs);
-double *xsiRWheels(CtrlStruct *cvs);
-void computePosition(CtrlStruct *cvs,double *xsiRpoint);
+void xsiRWheels(CtrlStruct *cvs, int unit);
+void computePosition(CtrlStruct *cvs);
 void displayOdometry(CtrlStruct *cvs);
 
 

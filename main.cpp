@@ -6,12 +6,13 @@
 
 /* 
  * File:   main.cpp
- * Author: GuiP
+ * Author: matthieu
  *
- * Created on 28 février 2017, 23:35
+ *  Created on March 6, 2017, 4:42 PM
  */
 
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 #include <cstdlib>
 #include <iostream>
@@ -36,84 +37,224 @@
 #include <time.h>
 #include "Electrovannes.h"
 #include "Odometer.h"
+#include "Odometry_gr1.hpp"
 using namespace std;
 
-/*
- * 
- * 
- * 
- */
-struct args {
+struct globalStruct {
     CtrlStruct *MyStruct;
     MyMotors motorR;
     MyMotors motorL;
+    MyOdometers odoR;
+    MyOdometers odoL;
+    pthread_mutex_t *mutex;
     
 };
 
 void * ThreadMotorR(void *atab)
 { 
-    args *In_pthread = (args*) atab;
+    globalStruct *In_pthread = (globalStruct*) atab;
     while(1)
     {
-        In_pthread->MyStruct->inputs->r_wheel_speed = (In_pthread->motorR.getSpeed()); 
-        //printf("%f \t",In_pthread->MyStruct->inputs->r_wheel_speed);
+        if(1)//pthread_mutex_lock(In_pthread->mutex)==0)
+        {
+            In_pthread->MyStruct->inputs->r_wheel_speed = (In_pthread->motorR.getSpeed()); 
+            if(1)//pthread_mutex_unlock(In_pthread->mutex) ==0)
+            {
+                printf("%f \t",In_pthread->MyStruct->inputs->r_wheel_speed);
+            }
+            else
+            {
+               printf("ERROR : mutex unlocking failed \n "); 
+            }
+        }
+        else
+        {
+            printf("ERROR : mutex locking failed \n ");
+        }
     }
 }
 void * ThreadMotorL(void *atab)
 { 
-    args *In_pthread = (args*) atab;
+    globalStruct *In_pthread = (globalStruct*) atab;
     while(1)
     {
-        In_pthread->MyStruct->inputs->l_wheel_speed = (In_pthread->motorL.getSpeed());
-        //printf("%f \n",In_pthread->MyStruct->inputs->l_wheel_speed);
+        if(1)//pthread_mutex_lock(In_pthread->mutex)==0)
+        {
+            In_pthread->MyStruct->inputs->l_wheel_speed = (In_pthread->motorL.getSpeed()); 
+            if(1)//pthread_mutex_unlock(In_pthread->mutex) ==0)
+            {
+                printf("%f \t",In_pthread->MyStruct->inputs->l_wheel_speed);
+            }
+            else
+            {
+               printf("ERROR : mutex unlocking failed \n "); 
+            }
+        }
+        else
+        {
+            printf("ERROR : mutex locking failed \n");
+        }
     }
 }
 
+/*void * ThreadOdoL(void *atab)
+{ 
+    globalStruct *In_pthread = (globalStruct*) atab;
+    while(1)
+    {
+        if(pthread_mutex_lock(In_pthread->mutex)==0)
+        {
+            In_pthread->MyStruct->inputs->l_odo_speed = (In_pthread->odoL.getOdometersSpeed()); 
+            if(pthread_mutex_unlock(In_pthread->mutex) ==0)
+            {
+                //printf("%f \t",In_pthread->MyStruct->inputs->r_odo_speed);
+            }
+            else
+            {
+               printf("ERROR : mutex unlocking failed \n "); 
+            }
+        }
+        else
+        {
+            printf("ERROR : mutex locking failed \n ");
+        }
+    }
+}
+
+void * ThreadOdoR(void *atab)
+{ 
+    globalStruct *In_pthread = (globalStruct*) atab;
+    while(1)
+    {
+        if(pthread_mutex_lock(In_pthread->mutex)==0)
+        {
+            In_pthread->MyStruct->inputs->r_odo_speed = (In_pthread->odoR.getOdometersSpeed()); 
+            if(pthread_mutex_unlock(In_pthread->mutex) ==0)
+            {
+               // printf("%f \t",In_pthread->MyStruct->inputs->r_odo_speed);
+            }
+            else
+            {
+               printf("ERROR : mutex unlocking failed "); 
+            }
+        }
+        else
+        {
+            printf("ERROR : mutex locking failed ");
+        };
+    }
+}
+
+void * ThreadComputePosition(void *atab)
+{ 
+    globalStruct *In_pthread = (globalStruct*) atab;
+    int counter = 0; // counter is used for the first iteration trough the loop 
+    long int time_start, time_end;
+    struct timeval  tv;
+    while(1)
+    {
+        gettimeofday(&tv, NULL);
+        time_start =  (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000 ;
+        if(counter ==0)
+        {
+            if(pthread_mutex_lock(In_pthread->mutex)==0)
+            {
+                xsiRWheels(In_pthread->MyStruct,0);
+                computePosition(In_pthread->MyStruct); 
+                if(pthread_mutex_unlock(In_pthread->mutex) ==0) {}   
+                else
+                {
+                    printf("ERROR : mutex unlocking failed "); 
+                }
+            }
+            else
+            {
+                printf("ERROR : mutex locking failed ");
+            }
+        }
+        else
+        {
+            if(pthread_mutex_lock(In_pthread->mutex)==0)
+            {
+                xsiRWheels(In_pthread->MyStruct,0);
+                computePosition(In_pthread->MyStruct); 
+                if(pthread_mutex_unlock(In_pthread->mutex) ==0) {}   
+                else
+                {
+                    printf("ERROR : mutex unlocking failed "); 
+                }
+            }
+            else
+            {
+                printf("ERROR : mutex locking failed ");
+            }
+            
+        }
+        
+        
+   
+    }
+}*/
+
+
 
 int main(int argc, char** argv) {
-    
+    printf("Hello from main test \n");
     gpioInitialise();
+    //initialization of CAN bus 
     MyMCP2515 *MyCAN = new MyMCP2515();
     MyCAN->doInit();
+    //initialization of DE0 nao
     MyDE0Nano *nano = new MyDE0Nano();
-    args *atab = (args*) malloc(sizeof(args));
-    MyTourelle tourelle(MyCAN, nano, 0x508);
-    MyMotors motorsright(MyCAN, nano, 0x708,1);
-    MyMotors motorsleft(MyCAN, nano, 0x708,2);
-    
-    MyOdometers odoright(nano,1);
-    
-    MyVannes electrovannes(MyCAN,0x408);
     nano->reset();
+    //creation of object tourelle
+    MyTourelle tourelle(MyCAN, nano, 0x508);
+    
+    //Creation and initialization of object motors for RIGHT MOTOR
+    MyMotors motorsright(MyCAN, nano, 0x708, 1);
+    motorsright.initMotor();
+    
+    //Creation and initialization of object motors for LEFT MOTOR
+    MyMotors motorsleft(MyCAN, nano, 0x708, 2);
+    motorsleft.initMotor();
+    
+    //Creation and initailization of Odometer RIGHT & LEFT
+    MyOdometers odoright(nano, 1);
+    MyOdometers odoleft(nano, 2);
+    
+    // Creation and initialization of vannes
+    MyVannes electrovannes(MyCAN, 0x408);
+    
     
     CtrlIn *In;
     CtrlOut *Out;
     
+    
     In = (CtrlIn*) malloc(sizeof(CtrlIn));
     Out = (CtrlOut*) malloc(sizeof(CtrlOut));
-    
-    CtrlStruct *MyStruct;
+
     In->r_wheel_speed = 0.0;
     In->l_wheel_speed = 0.0;
-    
-    double xsiR[2];
-    
+    printf("Hello from main 2 \n");
+    CtrlStruct *MyStruct;
+    globalStruct *atab = (globalStruct*) malloc(sizeof(globalStruct));
     MyStruct = init_CtrlStruct(In,Out);
+    printf("Hello from main 3\n");
     atab->motorR = motorsright;
     atab->motorL = motorsleft;
     atab->MyStruct = MyStruct;
     
-    pthread_t threadMotorRight,threadMotorLeft;
+    pthread_t threadMotorRight,threadMotorLeft, threadOdoRight, threadOdoLeft, threadPosCompute;
     int retRight = pthread_create(&threadMotorRight, NULL, ThreadMotorR, (void*)atab);
     int retLeft = pthread_create(&threadMotorLeft, NULL, ThreadMotorL, (void*)atab);
-    if(retRight)
+    int retOdoRight = 0;//pthread_create(&threadOdoRight, NULL, ThreadOdoR, (void*)atab);
+    int retOdoLeft = 0;//pthread_create(&threadOdoLeft, NULL, ThreadOdoL, (void*)atab);
+    int retPosCompute = 0;//pthread_create(&threadPosCompute, NULL, ThreadComputePosition, (void*)atab);
+    if(retRight || retLeft || retOdoRight || retOdoLeft || retPosCompute)
     {
-        printf("failed in thread for right motor creation\n");
+        printf("failed in one/several thread creation\n");
     }
-    if(retLeft)
-    {
-        printf("failed in thread for right motor creation\n");
-    }
+    printf("Hello from main 4\n");
     double *KpKi = Kp_Ki_Computation(0.01,0.01);
     printf("Kp = %f \n", KpKi[0]);
     printf("Ki = %f \n", KpKi[1]);
@@ -129,8 +270,6 @@ int main(int argc, char** argv) {
      motorsleft.setSpeed(MyStruct->struct_control->command[1]);
      //printf("Speed ref right : %f\n",MyStruct->struct_control->Speed_ref[0]);
      //odoright.getOdometersPosition();
-     xsiR = xsiRWheels(MyStruct);
-     computePosition(MyStruct,xsiR);
      //displayWheels(MyStruct);
      //printf("wheel_ref_gauche: %f \n",wheel_ref[1]);
      //printf("wheel_ref_droite: %f \n",wheel_ref[0]);

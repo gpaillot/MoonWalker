@@ -10,11 +10,11 @@
 #ifndef Wheels_gr1_hpp
 #define Wheels_gr1_hpp
 
-#include "namespace_ctrl.h"
+//#include "namespace_ctrl.h"
 #include "ctrl_io.h"
-#include "namespace_ctrl.h"
+//#include "namespace_ctrl.h"
 #include <stdlib.h>
-NAMESPACE_INIT(ctrlGr1);
+//NAMESPACE_INIT(ctrlGr1);
 
 
 typedef struct Node
@@ -68,6 +68,5 @@ typedef struct Astar
 
 } Astar;
 
-NAMESPACE_CLOSE();
 
 #endif // end of header guard
